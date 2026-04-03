@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-label="Kaziranga safari">
+  <rect width="800" height="520" fill="#143227"/>
+  <rect y="80" width="800" height="180" fill="#1d5c43"/>
+  <path d="M0 330 C130 280 280 285 430 320 C570 350 700 350 800 320 L800 520 L0 520 Z" fill="#246b4d"/>
+  <ellipse cx="480" cy="305" rx="115" ry="42" fill="#0f1f1a" opacity="0.55"/>
+  <text x="36" y="486" fill="#e8f2ed" opacity="0.8" font-size="24" font-family="Arial, sans-serif">Kaziranga Dawn Safari</text>
+</svg>

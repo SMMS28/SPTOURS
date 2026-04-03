@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-label="Shillong hills">
+  <rect width="800" height="520" fill="#132a22"/>
+  <circle cx="610" cy="126" r="52" fill="#e9a43f" opacity="0.72"/>
+  <path d="M0 320 C170 260 300 250 470 320 C620 380 730 380 800 350 L800 520 L0 520 Z" fill="#1d5f45"/>
+  <path d="M0 380 C170 340 340 350 530 395 C650 425 760 430 800 420 L800 520 L0 520 Z" fill="#2b7c5d"/>
+  <text x="42" y="486" fill="#e8f2ed" opacity="0.8" font-size="24" font-family="Arial, sans-serif">48 Hours in Shillong</text>
+</svg>

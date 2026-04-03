@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" role="img" aria-label="Dzukou valley">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#21483b"/>
+      <stop offset="100%" stop-color="#0f1f1a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1400" height="900" fill="url(#g)"/>
+  <path d="M0 490 C200 390 320 390 520 500 C700 610 860 620 1080 510 C1200 450 1310 430 1400 470 L1400 900 L0 900 Z" fill="#1b5e46"/>
+  <path d="M0 610 C170 540 400 530 680 650 C900 740 1170 730 1400 630 L1400 900 L0 900 Z" fill="#2a7a5b"/>
+  <path d="M60 630 C280 570 460 580 640 650" stroke="#e9a43f" stroke-width="4" fill="none" opacity="0.55"/>
+  <path d="M720 660 C890 610 1110 600 1330 680" stroke="#e9a43f" stroke-width="4" fill="none" opacity="0.55"/>
+  <text x="70" y="850" fill="#e8f2ed" opacity="0.74" font-family="Arial, sans-serif" font-size="32">Northeast Placeholder · Dzükoü Valley</text>
+</svg>

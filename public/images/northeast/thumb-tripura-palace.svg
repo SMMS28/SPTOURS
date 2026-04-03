@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-label="Tripura palace">
+  <rect width="800" height="520" fill="#13261f"/>
+  <rect y="70" width="800" height="190" fill="#204e3d"/>
+  <rect x="220" y="200" width="360" height="210" fill="#d6b17a" opacity="0.78"/>
+  <rect x="280" y="250" width="40" height="160" fill="#c59653"/>
+  <rect x="380" y="250" width="40" height="160" fill="#c59653"/>
+  <rect x="480" y="250" width="40" height="160" fill="#c59653"/>
+  <rect y="410" width="800" height="110" fill="#174134"/>
+  <text x="40" y="484" fill="#e8f2ed" opacity="0.8" font-size="24" font-family="Arial, sans-serif">Tripura Heritage Escape</text>
+</svg>

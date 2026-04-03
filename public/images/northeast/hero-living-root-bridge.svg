@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Living root bridge">
+  <rect width="1200" height="800" fill="#10261f"/>
+  <rect y="70" width="1200" height="220" fill="#173d31"/>
+  <path d="M120 420 C320 300 820 300 1040 430" stroke="#1ea67a" stroke-width="38" fill="none" stroke-linecap="round"/>
+  <path d="M120 450 C310 335 820 335 1040 465" stroke="#84d9bb" stroke-width="14" fill="none" stroke-linecap="round" opacity="0.65"/>
+  <path d="M0 560 C300 500 760 500 1200 570 L1200 800 L0 800 Z" fill="#0f1f1a"/>
+  <g fill="#245d4a" opacity="0.7">
+    <circle cx="220" cy="560" r="65"/>
+    <circle cx="940" cy="550" r="78"/>
+    <circle cx="760" cy="610" r="58"/>
+  </g>
+  <text x="56" y="750" fill="#e8f2ed" opacity="0.75" font-family="Arial, sans-serif" font-size="30">Northeast Placeholder · Living Root Bridge</text>
+</svg>

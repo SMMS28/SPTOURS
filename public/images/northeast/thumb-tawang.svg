@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-label="Tawang landscapes">
+  <rect width="800" height="520" fill="#11261f"/>
+  <path d="M0 250 L180 110 L330 250 Z" fill="#2a7759"/>
+  <path d="M200 260 L420 70 L620 260 Z" fill="#1f664b"/>
+  <path d="M430 260 L620 130 L800 260 Z" fill="#2e8664"/>
+  <rect y="260" width="800" height="260" fill="#174335"/>
+  <text x="40" y="484" fill="#e8f2ed" opacity="0.8" font-size="24" font-family="Arial, sans-serif">Tawang Monastery Trail</text>
+</svg>

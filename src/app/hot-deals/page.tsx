@@ -1,0 +1,24 @@
+import { hotDeals } from "@/lib/data/feature-catalog";
+
+export const metadata = {
+  title: "Hot Deals | SP TOURS AND TRAVELLS",
+};
+
+export default function HotDealsPage() {
+  return (
+    <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+      <h1 className="text-3xl font-semibold">Hot deals</h1>
+      <p className="mt-2 text-muted-foreground">Limited-period travel offers and featured package pricing.</p>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {hotDeals.map((deal) => (
+          <article key={deal.title} className="rounded-lg border bg-card p-5">
+            <h2 className="font-semibold">{deal.title}</h2>
+            <p className="mt-2 text-sm text-muted-foreground">{deal.subtitle}</p>
+            <p className="mt-4 font-medium">{deal.priceLabel}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}

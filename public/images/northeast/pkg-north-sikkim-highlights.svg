@@ -1,0 +1,14 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B3B6E"/>
+      <stop offset="1" stop-color="#34A0A4"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <path d="M0 640L220 470L390 560L610 380L840 550L1030 420L1290 590L1600 440V900H0V640Z" fill="#F2F7FF" fill-opacity="0.28"/>
+  <path d="M0 710L260 560L470 650L690 500L920 680L1150 560L1400 700L1600 610V900H0V710Z" fill="#0F172A" fill-opacity="0.35"/>
+  <circle cx="1275" cy="190" r="82" fill="#FFF5CC" fill-opacity="0.85"/>
+  <text x="90" y="760" fill="white" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="700">North Sikkim Highlights</text>
+  <text x="90" y="820" fill="white" fill-opacity="0.9" font-family="Inter, Arial, sans-serif" font-size="32">Lachung • Yumthang Valley • Bhim Nala Falls</text>
+</svg>

@@ -1,0 +1,13 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="900" x2="1600" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F4C5C"/>
+      <stop offset="1" stop-color="#7FB069"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <path d="M0 600C180 530 320 510 500 550C700 595 900 700 1120 660C1310 625 1450 540 1600 500V900H0V600Z" fill="#DFF7E6" fill-opacity="0.28"/>
+  <path d="M0 700C220 650 390 640 600 690C850 750 1070 790 1310 740C1440 713 1535 670 1600 640V900H0V700Z" fill="#1E293B" fill-opacity="0.34"/>
+  <text x="100" y="748" fill="white" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="700">Sikkim Getaway with Yumthang</text>
+  <text x="100" y="808" fill="white" fill-opacity="0.92" font-family="Inter, Arial, sans-serif" font-size="31">Gangtok • Lachung • High-altitude valley blooms</text>
+</svg>

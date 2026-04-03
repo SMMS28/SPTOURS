@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-label="Loktak lake">
+  <rect width="800" height="520" fill="#10231d"/>
+  <rect y="60" width="800" height="170" fill="#1f5b44"/>
+  <rect y="230" width="800" height="290" fill="#1d7556"/>
+  <g fill="#84d9bb" opacity="0.45">
+    <ellipse cx="220" cy="350" rx="88" ry="34"/>
+    <ellipse cx="430" cy="325" rx="70" ry="28"/>
+    <ellipse cx="620" cy="370" rx="96" ry="34"/>
+  </g>
+  <text x="40" y="484" fill="#e8f2ed" opacity="0.8" font-size="24" font-family="Arial, sans-serif">Loktak Floating Islands</text>
+</svg>
