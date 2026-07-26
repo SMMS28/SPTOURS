@@ -6,7 +6,7 @@ const supabaseKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const createClient = (request: NextRequest) => {
+export const createClient = async (request: NextRequest) => {
   let supabaseResponse = NextResponse.next({
     request: {
       headers: request.headers,
@@ -34,8 +34,21 @@ export const createClient = (request: NextRequest) => {
     },
   });
 
-  // Trigger auth state resolution so refreshed cookies get set on the response.
-  void supabase.auth.getUser();
+  // Must be awaited. This was `void supabase.auth.getUser()`, which broke two
+  // ways for signed-in visitors:
+  //   1. setAll() reassigns supabaseResponse with the refreshed cookies, and the
+  //      function returned before that ran — so a rotated session token was
+  //      silently dropped and the session kept re-refreshing.
+  //   2. A rejected promise became an unhandled rejection, which surfaced as an
+  //      Internal Server Error on every request that had a session to resolve.
+  // Anonymous visitors have no token to refresh, which is why it only bit after
+  // signing in.
+  try {
+    await supabase.auth.getUser();
+  } catch {
+    // A Supabase failure must not take the site down — continue unauthenticated
+    // and let the page-level guards redirect if they need to.
+  }
 
   return supabaseResponse;
 };

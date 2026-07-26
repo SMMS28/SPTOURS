@@ -2,8 +2,8 @@ import { type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
-  const supabaseResponse = createClient(request);
-  return supabaseResponse;
+  // Awaited so the refreshed session cookies are on the response we return.
+  return await createClient(request);
 }
 
 export const config = {
