@@ -42,9 +42,11 @@ export const signUp = async (formData: FormData) => {
   const fullName = String(formData.get("full_name") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
 
+  const nextPath = sanitizeNextPath(String(formData.get("next") ?? "/").trim() || "/");
+
   const supabase = await createClient();
   const siteUrl = getSiteBaseUrl();
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
@@ -60,7 +62,19 @@ export const signUp = async (formData: FormData) => {
     redirect(`/register?message=${encodeURIComponent(error.message)}`);
   }
 
-  redirect("/register?message=Check%20your%20email%20to%20verify%20your%20account.");
+  // When "Confirm email" is off, Supabase returns a live session and the account
+  // is usable immediately — send them into the site rather than telling them to
+  // check an inbox for a mail that will never arrive. When confirmation IS
+  // required there is no session, so fall through to the check-your-email notice.
+  if (data.session) {
+    redirect(nextPath);
+  }
+
+  redirect(
+    `/register?message=${encodeURIComponent(
+      "Account created. Check your email for the verification link before signing in.",
+    )}`,
+  );
 };
 
 export const signIn = async (formData: FormData) => {
@@ -82,7 +96,12 @@ export const signIn = async (formData: FormData) => {
   const nextPath = String(formData.get("next") ?? "/").trim() || "/";
 
   if (error) {
-    redirect(`/login?message=${encodeURIComponent(error.message)}`);
+    // "Email not confirmed" is the single most common failure here and the raw
+    // message doesn't tell the user what to do about it.
+    const message = /email\s*not\s*confirmed/i.test(error.message)
+      ? "This account hasn't been verified yet. Check your inbox for the confirmation link, or ask us to activate it for you."
+      : error.message;
+    redirect(`/login?message=${encodeURIComponent(message)}`);
   }
 
   redirect(nextPath.startsWith("/") ? nextPath : "/");

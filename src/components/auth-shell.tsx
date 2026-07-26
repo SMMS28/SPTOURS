@@ -122,6 +122,9 @@ export function AuthShell({
               <Heading>Create your account.</Heading>
               <Sub>Save journeys, track bookings and get faster quotes.</Sub>
               <form action={signUp} className="flex flex-col gap-4">
+                {/* Carried through so a successful sign-up (when email
+                    confirmation is disabled) lands where they were headed. */}
+                <input type="hidden" name="next" value={next} />
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Full name">
                     <input name="full_name" type="text" placeholder="Ananya Sharma" className={field} />
