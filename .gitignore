@@ -15,8 +15,9 @@
 /test-results
 /playwright-report
 
-# raw redesign source drop — already integrated into src/, kept locally only
-/sptours-nextjs
+# raw redesign source drops — already integrated into src/, kept locally only.
+# Pattern (not an exact path) so re-drops like "sptours-nextjs 2" are caught too.
+sptours-nextjs*
 
 # next.js
 /.next/
