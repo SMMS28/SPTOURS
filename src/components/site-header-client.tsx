@@ -18,6 +18,13 @@ const LINKS = [
   { href: "/contact", label: "Contact" },
 ];
 
+/**
+ * Routes inside (site) whose hero is light rather than a dark photo. The header's
+ * transparent state uses paper-coloured links, which would be invisible on ivory,
+ * so these force the opaque treatment from the first paint.
+ */
+const LIGHT_HERO_ROUTES = ["/northeast"];
+
 type SiteHeaderClientProps = {
   isAuthenticated: boolean;
   isAdmin: boolean;
@@ -46,7 +53,10 @@ export function SiteHeaderClient({
     return () => window.removeEventListener("scroll", onScroll);
   }, [solid]);
 
-  const opaque = solid || scrolled;
+  const lightHero = LIGHT_HERO_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+  const opaque = solid || lightHero || scrolled;
   const linkColor = opaque ? "text-ink" : "text-paper";
 
   const links = isAdmin ? [...LINKS, { href: "/admin", label: "Admin" }] : LINKS;

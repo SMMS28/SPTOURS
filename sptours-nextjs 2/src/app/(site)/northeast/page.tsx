@@ -3,10 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { motion, type Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { WA_PLAN } from "@/lib/site";
 
-const reveal: Variants = {
+const reveal = {
   hidden: { opacity: 0, y: 28 },
   show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.85, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] } }),
 };
@@ -18,8 +18,6 @@ const STATES = [
   { name: "Arunachal Pradesh", tagline: "Land of dawn-lit mountains", image: "/images/hero-bg/pexels-pallabi-dewri-791137-5496933.jpg", desc: "India's largest monastery at Tawang, the zen Ziro Valley and snowy Sela Pass — every kilometre a revelation." },
   { name: "Nagaland", tagline: "Land of festivals", image: "/images/hero-bg/pexels-vijit-bagh-3435480-5414576.jpg", desc: "The legendary Hornbill Festival, the dramatic Dzükou Valley and the warm hospitality of the Naga tribes." },
   { name: "Manipur", tagline: "Jewel of India", image: "/images/hero-bg/pexels-logalongwithme-6058267.jpg", desc: "The world's only floating national park at Loktak Lake, ancient polo grounds and a centuries-old dance heritage." },
-  { name: "Mizoram", tagline: "Land of the highlanders", image: "/images/hero-bg/pexels-xperimental-1043292.jpg", desc: "Bamboo-clad ridges, the Blue Mountain of Phawngpui and hill villages where every household sings." },
-  { name: "Tripura", tagline: "Land of palaces", image: "/images/hero-bg/pexels-quang-nguyen-vinh-222549-6877977.jpg", desc: "The lake palace of Neermahal, the rock carvings of Unakoti and Ujjayanta's royal halls in Agartala." },
   { name: "Darjeeling", tagline: "Queen of the hills", image: "/images/northeast/gangtok-darjeeling-yak-ride-6d5n-1.jpg", desc: "The UNESCO-listed Himalayan Railway, golden tea estates and a Tiger Hill sunrise over Kangchenjunga." },
 ];
 
@@ -121,7 +119,7 @@ export default function NortheastPage() {
               <a href={WA_PLAN} target="_blank" rel="noopener noreferrer" className="inline-flex h-14 items-center rounded-full border-[1.5px] border-ink/20 px-7 text-[15.5px] font-semibold text-ink transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-paper">Plan on WhatsApp</a>
             </div>
             <div className="mt-11 flex flex-wrap gap-[34px] border-t border-ink/12 pt-7">
-              {[[8, "States", ""], [7, "Routes", ""], [19999, "From / person", "₹"], [null, "Since", ""]].map(([num, sub, pre]) => (
+              {[[8, "States", ""], [7, "Routes", ""], [19999, "From / person", "₹"], [null, "Since", ""]].map(([num, sub, pre], i) => (
                 <div key={sub as string}>
                   <p className="font-display text-[34px] font-bold text-ink">{num === null ? "1986" : <CountUp to={num as number} prefix={pre as string} />}</p>
                   <p className="mt-1.5 font-mono text-[10.5px] uppercase tracking-[0.12em] text-[#8a8578]">{sub as string}</p>
@@ -133,9 +131,7 @@ export default function NortheastPage() {
             <div className="absolute right-0 top-0 h-full w-[78%] overflow-hidden rounded-[28px] shadow-[0_50px_90px_-50px_rgba(20,17,11,0.6)]">
               <Image src="/images/hero-bg/pexels-parijb-3678501.jpg" alt="Meghalaya" fill sizes="600px" className="animate-kb object-cover" priority />
               <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,17,11,0.6)_0%,rgba(20,17,11,0)_45%)]" />
-              {/* Right-aligned: the smaller framed image sits bottom-left and was
-                  covering this caption on desktop. */}
-              <div className="absolute bottom-[22px] right-[22px] text-right text-paper"><p className="mb-1 font-mono text-[10.5px] uppercase tracking-[0.16em] text-[#E3B98A]">Meghalaya</p><p className="font-display text-[17px] font-semibold">Living root bridges</p></div>
+              <div className="absolute bottom-[22px] left-[22px] text-paper"><p className="mb-1 font-mono text-[10.5px] uppercase tracking-[0.16em] text-[#E3B98A]">Meghalaya</p><p className="font-display text-[17px] font-semibold">Living root bridges</p></div>
             </div>
             <div className="absolute bottom-10 left-0 h-[300px] w-[46%] overflow-hidden rounded-[22px] border-[5px] border-paper shadow-[0_34px_60px_-34px_rgba(20,17,11,0.55)]">
               <Image src="/images/hero-bg/pexels-pallabi-dewri-791137-5496933.jpg" alt="Arunachal" fill sizes="300px" className="object-cover" />
@@ -145,6 +141,10 @@ export default function NortheastPage() {
               <span className="mt-1 font-mono text-[8.5px] uppercase leading-tight tracking-[0.18em] text-paper/75">Seven<br />Sisters</span>
             </div>
           </div>
+        </div>
+        <div className="absolute bottom-[26px] left-6 z-[3] inline-flex items-center gap-3 lg:left-10">
+          <span className="h-px w-10 bg-ink/40" />
+          <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#8a8578]">Scroll to explore</span>
         </div>
       </section>
 
@@ -168,7 +168,7 @@ export default function NortheastPage() {
         <motion.div variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true }} className="mb-8 flex items-end justify-between gap-8">
           <div>
             <p className="mb-3.5 font-mono text-xs uppercase tracking-[0.3em] text-clay">Explore by state</p>
-            <h2 className="font-display text-[clamp(30px,3.6vw,52px)] font-bold tracking-[-0.025em]">Eight states, one region.</h2>
+            <h2 className="font-display text-[clamp(30px,3.6vw,52px)] font-bold tracking-[-0.025em]">Eight worlds, one region.</h2>
           </div>
           <p className="mb-1.5 hidden font-mono text-xs text-[#8a8578] sm:block">hover a state to preview →</p>
         </motion.div>
