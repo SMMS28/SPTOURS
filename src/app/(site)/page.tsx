@@ -1,12 +1,13 @@
 import { getPublishedPackages } from "@/lib/data/packages";
-import { groupPackagesByCategory } from "@/lib/data/package-categories";
+import { toPackageViews } from "@/lib/packages-view";
 import { HomeExperience } from "@/components/home-experience";
 
 export const revalidate = 300;
 
 export default async function HomePage() {
+  // getPublishedPackages carries its own static-catalogue fallback, so this
+  // renders whether or not Supabase is reachable.
   const packages = await getPublishedPackages();
-  const grouped = groupPackagesByCategory(packages);
 
-  return <HomeExperience packages={packages} grouped={grouped} />;
+  return <HomeExperience packages={toPackageViews(packages)} />;
 }

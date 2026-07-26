@@ -1,518 +1,224 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import type { MouseEvent } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useScroll, useTransform, type Variants } from "framer-motion";
+import { HERO_SLIDES, WA_ENQUIRE, PHONE_DISPLAY, PHONE_TEL, EMAIL } from "@/lib/site";
+import { bentoSpan, type PackageView } from "@/lib/packages-view";
 
-import { MarqueeHighlights } from "@/components/marquee-highlights";
-import { NeMap } from "@/components/ne-map";
-import { PackageCompareSheet } from "@/components/package-compare-sheet";
-import { prioritizeMostVisitedNortheast } from "@/lib/data/northeast-package-catalog";
-import type { TravelPackage } from "@/lib/types";
-
-type GroupedPackages = {
-  key: string;
-  title: string;
-  sourceCategory: string;
-  packages: TravelPackage[];
+const reveal: Variants = {
+  hidden: { opacity: 0, y: 28 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
 };
 
-type HomeExperienceProps = {
-  packages: TravelPackage[];
-  grouped: GroupedPackages[];
-};
-
-const reveal = {
-  hidden: { opacity: 0, y: 24, scale: 0.98 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.6 },
-  },
-};
-
-const northeastStates = [
-  "Assam",
-  "Meghalaya",
-  "Arunachal Pradesh",
-  "Nagaland",
-  "Sikkim",
-  "Manipur",
-  "Mizoram",
-  "Tripura",
-] as const;
-
-const statePatterns: Record<(typeof northeastStates)[number], RegExp> = {
-  Assam: /assam|guwahati|kaziranga|majuli|manas/i,
-  Meghalaya: /meghalaya|shillong|cherrapunji|sohra|dawki|mawlynnong/i,
-  "Arunachal Pradesh": /arunachal|tawang|ziro|bomdila|dirang/i,
-  Nagaland: /nagaland|kohima|dz[uü]kou|mokokchung/i,
-  Sikkim: /sikkim|gangtok|lachung|pelling|tsomgo/i,
-  Manipur: /manipur|imphal|loktak/i,
-  Mizoram: /mizoram|aizawl/i,
-  Tripura: /tripura|agartala|ujjayanta/i,
-};
-
-const bestSeasonByState: Record<(typeof northeastStates)[number], string> = {
-  Assam: "Oct – Apr",
-  Meghalaya: "Sep – May",
-  "Arunachal Pradesh": "Oct – Apr",
-  Nagaland: "Oct – Feb",
-  Sikkim: "Mar – Jun",
-  Manipur: "Oct – Mar",
-  Mizoram: "Oct – Mar",
-  Tripura: "Oct – Mar",
-};
-
-const stories = [
-  {
-    title: "48 Hours in Shillong",
-    steps: [
-      "Land in Guwahati and drive through pine-lined roads to Shillong.",
-      "Sunset at Umiam Lake, then café-hopping in Police Bazaar.",
-      "Dawn detour to Laitlum and curated local music evening.",
-    ],
-  },
-  {
-    title: "Kaziranga Dawn Safari",
-    steps: [
-      "Check-in near Kohora with a naturalist briefing.",
-      "Start at first light for one-horned rhino sightings.",
-      "Wrap with Brahmaputra-side brunch and onward transfer.",
-    ],
-  },
-];
-
-const testimonials = [
-  {
-    name: "Rhea & Harsh",
-    quote: "The Meghalaya circuit felt cinematic — every transfer, stay, and activity was timed perfectly.",
-  },
-  {
-    name: "Nitin K.",
-    quote: "Kaziranga and Majuli in one seamless itinerary. Premium stays, zero travel stress.",
-  },
-  {
-    name: "Ananya S.",
-    quote: "The planner adapted our Arunachal route in real-time for weather and still kept it magical.",
-  },
-];
-
-const cultureSlides = [
-  {
-    src: "/images/hero-bg/pexels-kosyginl-2888802.jpg",
-    label: "North East India • Mountain Horizons",
-    objectPosition: "center 50%",
-  },
-  {
-    src: "/images/hero-bg/pexels-chunry-6538013.jpg",
-    label: "Sikkim • Alpine Escape",
-    objectPosition: "center 48%",
-  },
-  {
-    src: "/images/hero-bg/pexels-parijb-3678501.jpg",
-    label: "Meghalaya • Waterfall Valleys",
-    objectPosition: "center 46%",
-  },
-  {
-    src: "/images/hero-bg/pexels-pallabi-dewri-791137-5496933.jpg",
-    label: "Arunachal • Monastery Routes",
-    objectPosition: "center 45%",
-  },
-  {
-    src: "/images/hero-bg/nilotpal-kalita-24vPDG707eM-unsplash.jpg",
-    label: "Assam • Tea Garden Trails",
-    objectPosition: "center 42%",
-  },
-  {
-    src: "/images/hero-bg/pexels-vijit-bagh-3435480-5414576.jpg",
-    label: "Nagaland • Cloud Forest Views",
-    objectPosition: "center 48%",
-  },
-  {
-    src: "/images/hero-bg/pexels-xperimental-1043292.jpg",
-    label: "Tripura • Green Highlands",
-    objectPosition: "center 50%",
-  },
-  {
-    src: "/images/hero-bg/pexels-logalongwithme-6058267.jpg",
-    label: "Manipur • Lakefront Mornings",
-    objectPosition: "center 47%",
-  },
-] as const;
-
-const getDurationSummary = (durationDays?: number | null, rawDuration?: string | null) => {
-  const normalizedDays = Number.isFinite(durationDays) ? Number(durationDays) : 0;
-
-  if (normalizedDays > 0) {
-    const nights = Math.max(normalizedDays - 1, 0);
-    return `${normalizedDays} Days${nights > 0 ? ` / ${nights} Nights` : ""}`;
-  }
-
-  if (rawDuration?.trim()) {
-    return rawDuration.trim();
-  }
-
-  return "Duration on request";
-};
-
-const detectState = (travelPackage: TravelPackage) => {
-  const haystack = `${travelPackage.title} ${travelPackage.destination} ${travelPackage.location} ${travelPackage.short_description}`;
-  return northeastStates.find((state) => statePatterns[state].test(haystack)) ?? "Assam";
-};
-
-export function HomeExperience({ packages, grouped }: HomeExperienceProps) {
-  const heroRef = useRef<HTMLElement | null>(null);
-  const packageSectionRef = useRef<HTMLElement | null>(null);
-  const [selectedState, setSelectedState] = useState<string>("All");
-  const [compareOpen, setCompareOpen] = useState(false);
-  const [comparePackage, setComparePackage] = useState<TravelPackage | null>(null);
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
-  const [activeCultureSlide, setActiveCultureSlide] = useState(0);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 110]);
-
-  const northeastPackages = useMemo(() => {
-    return packages
-      .filter((travelPackage) => {
-        const combined = `${travelPackage.title} ${travelPackage.destination} ${travelPackage.location} ${travelPackage.short_description}`;
-        return northeastStates.some((state) => statePatterns[state].test(combined));
-      })
-      .slice(0, 12);
-  }, [packages]);
-
-  const fallbackFromGrouped = useMemo(() => {
-    const prioritizedNortheast = prioritizeMostVisitedNortheast(northeastPackages);
-
-    if (northeastPackages.length >= 6) {
-      return prioritizedNortheast;
-    }
-
-    const merged = grouped.flatMap((group) => group.packages);
-    const deduped = [...prioritizedNortheast];
-
-    for (const travelPackage of merged) {
-      if (!deduped.some((item) => item.id === travelPackage.id)) {
-        deduped.push(travelPackage);
-      }
-    }
-
-    return prioritizeMostVisitedNortheast(deduped).slice(0, 12);
-  }, [grouped, northeastPackages]);
-
-  const filteredPackages = useMemo(() => {
-    if (selectedState === "All") {
-      return fallbackFromGrouped;
-    }
-
-    return fallbackFromGrouped.filter((travelPackage) => detectState(travelPackage) === selectedState);
-  }, [fallbackFromGrouped, selectedState]);
-
-  const stateCounts = useMemo(() => {
-    const counts = Object.fromEntries(northeastStates.map((state) => [state, 0])) as Record<
-      (typeof northeastStates)[number],
-      number
-    >;
-    for (const travelPackage of fallbackFromGrouped) {
-      const state = detectState(travelPackage);
-      counts[state] += 1;
-    }
-
-    return counts;
-  }, [fallbackFromGrouped]);
+export function HomeExperience({ packages }: { packages: PackageView[] }) {
+  const [slide, setSlide] = useState(0);
+  const promiseRef = useRef<HTMLElement | null>(null);
+  const { scrollYProgress } = useScroll({ target: promiseRef, offset: ["start end", "end start"] });
+  const parallaxY = useTransform(scrollYProgress, [0, 1], ["-12%", "12%"]);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 4800);
-
-    return () => {
-      window.clearInterval(timer);
-    };
+    const t = setInterval(() => setSlide((s) => (s + 1) % HERO_SLIDES.length), 5000);
+    return () => clearInterval(t);
   }, []);
 
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveCultureSlide((previous) => (previous + 1) % cultureSlides.length);
-    }, 3000);
-
-    return () => {
-      window.clearInterval(timer);
-    };
-  }, []);
-
-  const goToPreviousCultureSlide = () => {
-    setActiveCultureSlide((previous) => (previous - 1 + cultureSlides.length) % cultureSlides.length);
-  };
-
-  const goToNextCultureSlide = () => {
-    setActiveCultureSlide((previous) => (previous + 1) % cultureSlides.length);
-  };
-
-  const handleCompare = (travelPackage: TravelPackage) => {
-    setComparePackage(travelPackage);
-    setCompareOpen(true);
-  };
-
-  const handleStateSelect = (state: string) => {
-    setSelectedState(state);
-    packageSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
-  const applyCursorGlow = (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    event.currentTarget.style.setProperty("--mx", `${event.clientX - rect.left}px`);
-    event.currentTarget.style.setProperty("--my", `${event.clientY - rect.top}px`);
-  };
+  const featured = packages[0];
+  const rest = packages.slice(1, 7);
 
   return (
-    <div className="-mt-28 space-y-14 pb-16 sm:-mt-32 lg:-mt-36">
-      <section ref={heroRef} className="relative isolate min-h-svh overflow-hidden border-b border-border/40">
-        <motion.div style={{ y: heroY }} className="absolute inset-0">
-          <AnimatePresence mode="sync" initial={false}>
+    <div>
+      {/* ===================== HERO ===================== */}
+      <section className="relative h-screen min-h-[700px] overflow-hidden bg-inkdeep">
+        <div className="absolute inset-0">
+          {HERO_SLIDES.map((s, i) => (
+            <div
+              key={s.src}
+              className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1600ms] ${s.anim} ${i === slide ? "opacity-100" : "opacity-0"}`}
+              style={{ backgroundImage: `url('${s.src}')` }}
+            />
+          ))}
+        </div>
+        <div className="absolute inset-0 bg-[linear-gradient(101deg,rgba(20,17,11,0.82)_0%,rgba(20,17,11,0.44)_42%,rgba(20,17,11,0.1)_72%,rgba(20,17,11,0)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,17,11,0.74)_0%,rgba(20,17,11,0)_42%)]" />
+
+        <div className="absolute inset-x-0 bottom-[12vh] z-[3]">
+          <div className="mx-auto flex max-w-[1360px] items-end justify-between gap-10 px-6 lg:px-10">
             <motion.div
-              key={cultureSlides[activeCultureSlide].src}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.1, ease: "easeInOut" }}
-              className="absolute inset-0"
+              initial="hidden"
+              animate="show"
+              variants={{ show: { transition: { staggerChildren: 0.14 } } }}
+              className="max-w-[780px]"
             >
-              <Image
-                src={cultureSlides[activeCultureSlide].src}
-                alt={cultureSlides[activeCultureSlide].label}
-                fill
-                priority={activeCultureSlide === 0}
-                quality={100}
-                className="object-cover"
-                style={{ objectPosition: cultureSlides[activeCultureSlide].objectPosition }}
-              />
-            </motion.div>
-          </AnimatePresence>
-          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(2,6,23,0.0)_0%,rgba(2,6,23,0.18)_30%,rgba(2,6,23,0.55)_65%,rgba(2,6,23,0.92)_100%)]" />
-        </motion.div>
-        <div className="noise-overlay absolute inset-0" />
-
-        <div className="group/left absolute inset-y-0 left-0 z-20 hidden w-24 items-center justify-center md:flex lg:w-28">
-          <button
-            type="button"
-            onClick={goToPreviousCultureSlide}
-            className="grid h-12 w-12 place-items-center rounded-full border border-white/55 bg-black/20 text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover/left:opacity-100 hover:bg-black/35 focus-visible:opacity-100"
-            aria-label="Previous background"
-          >
-            <span className="text-xl">←</span>
-          </button>
-        </div>
-        <div className="group/right absolute inset-y-0 right-0 z-20 hidden w-24 items-center justify-center md:flex lg:w-28">
-          <button
-            type="button"
-            onClick={goToNextCultureSlide}
-            className="grid h-12 w-12 place-items-center rounded-full border border-white/55 bg-black/20 text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover/right:opacity-100 hover:bg-black/35 focus-visible:opacity-100"
-            aria-label="Next background"
-          >
-            <span className="text-xl">→</span>
-          </button>
-        </div>
-
-        <div className="relative mx-auto grid min-h-svh w-full max-w-7xl items-end gap-8 px-4 pb-16 pt-24 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
-            className="mx-auto max-w-4xl text-center"
-          >
-            <motion.p variants={reveal} className="text-base font-medium text-white sm:text-lg [text-shadow:0_2px_12px_rgba(0,0,0,0.8)]">
-              Where clouds touch the mountains and every turn feels like cinema.
-            </motion.p>
-            <motion.h1 variants={reveal} className="mt-2 text-2xl font-semibold text-yellow-300 sm:text-4xl [text-shadow:0_2px_16px_rgba(0,0,0,0.9),0_4px_32px_rgba(0,0,0,0.6)]">
-              “The Northeast isn’t just a destination — it’s a feeling you carry home.”
-            </motion.h1>
-            <motion.p variants={reveal} className="mx-auto mt-3 max-w-2xl text-sm text-white sm:text-base [text-shadow:0_1px_10px_rgba(0,0,0,0.85)]">
-              Discover wild landscapes, soulful cultures, and unforgettable journeys across all Seven Sisters.
-            </motion.p>
-
-            <motion.div variants={reveal} className="mt-8 flex flex-wrap justify-center gap-3">
-              <motion.div whileHover={{ y: -3 }}>
-                <Link
-                  href="/contact"
-                  onMouseMove={applyCursorGlow}
-                  className="btn-cursor-glow inline-flex h-12 items-center justify-center rounded-full bg-[#f29a2e] px-8 text-base font-semibold text-white transition hover:bg-[#e4891f]"
-                >
-                  Connect With An Expert
+              <motion.p variants={reveal} className="mb-6 font-mono text-[13px] uppercase tracking-[0.32em] text-paper/85">
+                SP Tours &amp; Travels · Since 1986
+              </motion.p>
+              <motion.h1 variants={reveal} className="font-display text-[clamp(48px,7.4vw,108px)] font-bold leading-[0.94] tracking-[-0.025em] text-paper">
+                Go where India<br />breathes <span className="font-medium italic">deepest.</span>
+              </motion.h1>
+              <motion.p variants={reveal} className="mb-9 mt-7 max-w-[560px] text-[clamp(16px,1.4vw,20px)] leading-relaxed text-paper/90">
+                Handcrafted tours across the Seven Sisters — Assam, Meghalaya, Sikkim, Arunachal and beyond. Real routes, real places, handled end to end.
+              </motion.p>
+              <motion.div variants={reveal} className="flex flex-wrap gap-4">
+                <Link href="/packages" className="inline-flex h-[58px] items-center rounded-full bg-clay px-8 text-base font-bold text-paper shadow-[0_18px_44px_-18px_rgba(155,106,76,0.9)] transition-[background,transform] duration-300 hover:-translate-y-0.5 hover:bg-clay-dark">
+                  Explore packages →
                 </Link>
+                <a href={WA_ENQUIRE} target="_blank" rel="noopener noreferrer" className="inline-flex h-[58px] items-center rounded-full border border-paper/45 bg-paper/10 px-7 text-base font-semibold text-paper backdrop-blur transition-colors duration-300 hover:bg-paper/20">
+                  Chat on WhatsApp
+                </a>
               </motion.div>
             </motion.div>
 
-          </motion.div>
+            <div className="hidden shrink-0 pb-1.5 text-right lg:block">
+              <div className="relative h-[60px] w-[260px]">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={slide}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <p className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.24em] text-paper/60">Now showing</p>
+                    <p className="font-display text-[22px] font-semibold text-paper">{HERO_SLIDES[slide].caption}</p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+              <div className="mt-8 inline-flex flex-col items-center gap-2">
+                <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-paper/60 [writing-mode:vertical-rl]">Scroll</span>
+                <span className="animate-bob h-10 w-px bg-[linear-gradient(rgba(245,240,230,0.7),transparent)]" />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <MarqueeHighlights />
-      </section>
-
-      <section className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <NeMap selectedState={selectedState} onStateSelect={handleStateSelect} counts={stateCounts} />
-      </section>
-
-      <motion.section
-        ref={packageSectionRef}
-        variants={reveal}
-        initial={false}
-        animate="visible"
-        className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
-      >
-        <div className="flex flex-wrap items-end justify-between gap-4">
+      {/* ===================== JOURNEYS (bento) ===================== */}
+      {featured ? (
+      <section id="packages" className="mx-auto max-w-[1360px] px-6 pb-10 pt-[118px] lg:px-10">
+        <motion.div
+          variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-10%" }}
+          className="mb-[50px] flex flex-wrap items-end justify-between gap-12"
+        >
           <div>
-            <p className="text-xs uppercase tracking-[0.24em] text-primary">Curated packages</p>
-            <h2 className="mt-2 text-3xl font-semibold text-foreground">Northeast journeys, reimagined</h2>
+            <p className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-clay">Our journeys</p>
+            <h2 className="max-w-[760px] font-display text-[clamp(38px,4.8vw,72px)] font-bold leading-[0.96] tracking-[-0.028em]">
+              Seven ways into<br />the wild east.
+            </h2>
           </div>
-          <Link href="/packages" className="text-sm text-foreground/80 underline-offset-4 hover:text-foreground hover:underline">
-            Browse all tours
+          <p className="mb-2 max-w-[340px] text-[15.5px] leading-relaxed text-mutedfg">
+            Fixed departures or fully custom — real routes we&apos;ve walked ourselves. Hover a trip to look closer.
+          </p>
+        </motion.div>
+
+        {/* featured */}
+        <motion.div variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-8%" }} className="mb-6">
+          <Link href={`/packages/${featured.slug}`} className="group relative block h-[560px] overflow-hidden rounded-[26px]">
+            <Image src={featured.image} alt={featured.title} fill sizes="1360px" className="object-cover transition-transform duration-[1000ms] group-hover:scale-105" />
+            <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(20,17,11,0.88)_0%,rgba(20,17,11,0.52)_40%,rgba(20,17,11,0.08)_78%,rgba(20,17,11,0)_100%)]" />
+            <span className="absolute left-6 top-6 rounded-full bg-paper px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-inkdeep">{[featured.tag, featured.duration].filter(Boolean).join(" · ")}</span>
+            <div className="absolute inset-x-[46px] bottom-11 max-w-[620px] text-paper">
+              <p className="mb-4 font-mono text-xs uppercase tracking-[0.16em] text-clay-tint">{featured.region} · Guwahati start</p>
+              <h3 className="mb-[18px] font-display text-[clamp(34px,3.6vw,50px)] font-bold leading-none tracking-[-0.02em]">{featured.title}</h3>
+              <p className="mb-7 max-w-[480px] text-base leading-relaxed text-paper/85">{featured.blurb}</p>
+              <div className="flex items-center justify-between gap-6">
+                <div className="flex items-baseline gap-2">
+                  {featured.hasPrice ? <span className="font-mono text-[13px] text-paper/60">from</span> : null}
+                  <span className="font-display text-[40px] font-bold">{featured.priceLabel}</span>
+                  {featured.hasPrice ? <span className="text-sm text-paper/60">/ person</span> : null}
+                </div>
+                <span className="grid h-[60px] w-[60px] shrink-0 place-items-center rounded-full bg-clay text-[22px] shadow-[0_14px_34px_-14px_rgba(155,106,76,0.9)] transition-transform duration-300 group-hover:scale-110">→</span>
+              </div>
+            </div>
           </Link>
-        </div>
+        </motion.div>
 
-        <div className="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {filteredPackages.slice(0, 9).map((travelPackage) => {
-            const state = detectState(travelPackage);
-            const duration = getDurationSummary(travelPackage.duration_days, travelPackage.raw_duration);
-            const hasNumericPrice = Number.isFinite(travelPackage.price_inr);
-            const priceLabel = hasNumericPrice
-              ? `₹${Number(travelPackage.price_inr).toLocaleString("en-IN")}`
-              : "Price on request";
-
-            return (
-              <motion.article
-                key={travelPackage.id}
-                initial={false}
-                animate={{ opacity: 1, y: 0 }}
-                whileHover={{ rotateX: 4, rotateY: -4, y: -6 }}
-                transition={{ duration: 0.36, ease: "easeOut" }}
-                className="group relative overflow-hidden rounded-3xl border border-white/45 bg-[linear-gradient(165deg,rgba(255,255,255,0.26),rgba(255,255,255,0.14))] shadow-[0_16px_44px_-28px_rgba(15,23,42,0.35)] backdrop-blur-xl"
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(36,180,134,0.22),transparent_55%)] opacity-0 transition group-hover:opacity-100" />
-                <div className="relative h-52 overflow-hidden border-b border-white/10">
-                  <Image
-                    src={travelPackage.cover_image || "/images/northeast/thumb-kaziranga.svg"}
-                    alt={travelPackage.title}
-                    fill
-                    loading="lazy"
-                    className="object-cover transition duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div className="relative p-5 text-foreground">
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-lg font-semibold">{travelPackage.title}</h3>
-                    <span className="rounded-full border border-accent/45 bg-accent/20 px-2 py-1 text-xs text-accent-foreground">
-                      {state}
-                    </span>
-                  </div>
-                  <p className="mt-2 max-h-10 overflow-hidden text-sm text-foreground/75">{travelPackage.short_description}</p>
-
-                  <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                      <div className="rounded-xl border border-white/30 bg-white/24 p-2.5">
-                      <dt className="text-xs text-foreground/65">Price</dt>
-                        <dd className="mt-1 font-semibold">{priceLabel}</dd>
-                    </div>
-                    <div className="rounded-xl border border-white/30 bg-white/24 p-2.5">
-                      <dt className="text-xs text-foreground/65">Duration</dt>
-                      <dd className="mt-1 font-semibold">{duration}</dd>
-                    </div>
-                    <div className="rounded-xl border border-white/30 bg-white/24 p-2.5">
-                      <dt className="text-xs text-foreground/65">Best season</dt>
-                      <dd className="mt-1 font-semibold">{bestSeasonByState[state]}</dd>
-                    </div>
-                    <div className="rounded-xl border border-white/30 bg-white/24 p-2.5">
-                      <dt className="text-xs text-foreground/65">Starting city</dt>
-                      <dd className="mt-1 font-semibold">{travelPackage.destination || "Guwahati"}</dd>
-                    </div>
-                  </dl>
-
-                  <div className="mt-4 flex items-center justify-between gap-3">
-                    <Link href={`/packages/${travelPackage.slug}`} className="text-sm font-medium text-foreground underline-offset-4 hover:underline">
-                      View details
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => handleCompare(travelPackage)}
-                      className="rounded-full border border-primary/55 bg-primary/18 px-3 py-1.5 text-xs font-medium text-foreground transition hover:bg-primary/28"
-                    >
-                      Compare
-                    </button>
+        {/* bento grid */}
+        <div className="grid grid-cols-12 gap-6">
+          {rest.map((p, i) => (
+            <motion.div
+              key={p.slug}
+              variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-6%" }}
+              style={{ gridColumn: `span ${bentoSpan(i)} / span ${bentoSpan(i)}` }}
+            >
+              <Link href={`/packages/${p.slug}`} className="group relative block h-[440px] overflow-hidden rounded-[22px] transition-[transform,box-shadow] duration-500 hover:-translate-y-2 hover:shadow-[0_34px_62px_-42px_rgba(20,17,11,0.6)]">
+                <Image src={p.image} alt={p.title} fill sizes="(max-width:900px) 100vw, 45vw" className="object-cover transition-transform duration-[900ms] group-hover:scale-[1.07]" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,17,11,0.92)_6%,rgba(20,17,11,0.18)_56%,rgba(20,17,11,0.02)_100%)]" />
+                {p.tag ? <span className="absolute left-4 top-4 rounded-full bg-paper/95 px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-inkdeep">{p.tag}</span> : null}
+                <span className="absolute right-[18px] top-[18px] font-mono text-xs text-paper/85">{String(i + 1).padStart(2, "0")}</span>
+                <div className="absolute inset-x-6 bottom-6 text-paper">
+                  <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.12em] text-clay-tint">{p.region} · {p.duration}</p>
+                  <h4 className="mb-3.5 font-display text-[25px] font-bold leading-[1.06] tracking-[-0.01em]">{p.title}</h4>
+                  <div className="flex items-center justify-between">
+                    <span className="font-display text-[22px] font-bold">{p.priceLabel}</span>
+                    <span className="grid h-[42px] w-[42px] place-items-center rounded-full border border-paper/35 bg-paper/15 text-[17px] transition-[background,transform] duration-300 group-hover:translate-x-1 group-hover:bg-clay">→</span>
                   </div>
                 </div>
-              </motion.article>
-            );
-          })}
+              </Link>
+            </motion.div>
+          ))}
         </div>
 
-        {filteredPackages.length === 0 ? (
-          <p className="mt-6 text-sm text-foreground/70">No packages matched this state filter yet.</p>
-        ) : null}
-      </motion.section>
-
-      <section className="mx-auto grid w-full max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-        {stories.map((story, storyIndex) => (
-          <motion.article
-            key={story.title}
-            variants={reveal}
-            initial={false}
-            animate="visible"
-            transition={{ delay: storyIndex * 0.08 }}
-            className="rounded-3xl border border-white/35 bg-white/18 p-5 backdrop-blur-xl"
-          >
-            <h3 className="text-xl font-semibold text-foreground">{story.title}</h3>
-            <ol className="mt-4 space-y-3">
-              {story.steps.map((step, stepIndex) => (
-                <motion.li
-                  key={step}
-                  initial={false}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: stepIndex * 0.07 }}
-                  className="flex gap-3 text-sm text-foreground/85"
-                >
-                  <span className="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/28 text-xs font-semibold text-foreground">
-                    {stepIndex + 1}
-                  </span>
-                  <span>{step}</span>
-                </motion.li>
-              ))}
-            </ol>
-          </motion.article>
-        ))}
+        <motion.div variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true }} className="mt-[54px] text-center">
+          <Link href="/packages" className="inline-flex h-14 items-center rounded-full border-[1.5px] border-ink px-9 text-[15px] font-bold transition-colors duration-300 hover:bg-ink hover:text-paper">
+            See all tours &amp; fixed departures →
+          </Link>
+        </motion.div>
       </section>
+      ) : null}
 
-      <section className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl border border-white/35 bg-[linear-gradient(150deg,rgba(255,255,255,0.24),rgba(255,255,255,0.14))] p-6 backdrop-blur-xl">
-          <div className="mb-4 flex items-end justify-between gap-3">
-            <h3 className="text-2xl font-semibold text-foreground">Traveler stories</h3>
-            <p className="text-xs uppercase tracking-[0.22em] text-accent/90">Auto + drag</p>
-          </div>
-
-          <motion.div drag="x" dragConstraints={{ left: -140, right: 140 }} className="cursor-grab active:cursor-grabbing">
-            <AnimatePresence mode="wait">
-              <motion.article
-                key={testimonials[activeTestimonial].name}
-                initial={{ opacity: 0, rotateX: -9, y: 18 }}
-                animate={{ opacity: 1, rotateX: 0, y: 0 }}
-                exit={{ opacity: 0, rotateX: 8, y: -14 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="rounded-2xl border border-white/35 bg-white/24 p-5 text-foreground shadow-[0_20px_60px_-40px_rgba(36,180,134,0.35)]"
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <p className="text-base leading-relaxed">“{testimonials[activeTestimonial].quote}”</p>
-                <p className="mt-4 text-sm font-semibold text-accent">— {testimonials[activeTestimonial].name}</p>
-              </motion.article>
-            </AnimatePresence>
+      {/* ===================== PROMISE ===================== */}
+      <section ref={promiseRef} id="promise" className="relative mt-[90px] h-[640px] overflow-hidden bg-inkdeep">
+        <motion.div style={{ y: parallaxY }} className="absolute inset-x-0 -inset-y-[14%] bg-cover bg-[center_35%]" >
+          <div className="h-full w-full bg-cover bg-[center_35%]" style={{ backgroundImage: "url('/images/hero-bg/pexels-kosyginl-2888802.jpg')" }} />
+        </motion.div>
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,17,11,0.58)_0%,rgba(20,17,11,0.62)_55%,rgba(20,17,11,0.86)_100%)]" />
+        <div className="relative z-[2] mx-auto flex h-full max-w-[1360px] flex-col items-center justify-center px-6 text-center lg:px-10">
+          <motion.p variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true }} className="mb-[26px] font-mono text-xs uppercase tracking-[0.3em] text-clay-tint">Trusted since 1986</motion.p>
+          <motion.h2 variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true }} className="max-w-[960px] font-display text-[clamp(38px,5.4vw,76px)] font-bold leading-none tracking-[-0.025em] text-paper">
+            Your journey, our responsibility.
+          </motion.h2>
+          <motion.p variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true }} className="mt-7 max-w-[620px] text-lg leading-relaxed text-paper/80">
+            Four decades of running the Northeast — permits, stays, drivers, timing. We&apos;ve walked every route we sell, so you travel light and worry about nothing.
+          </motion.p>
+          <motion.div variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true }} className="mt-11 flex flex-wrap justify-center gap-10">
+            {[["Permits & paperwork", "Handled for you"], ["Hand-picked stays", "On every route"], ["Local drivers", "Who know the hills"]].map(([a, b]) => (
+              <div key={a} className="text-center">
+                <p className="font-display text-[15px] font-bold text-paper">{a}</p>
+                <p className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.12em] text-paper/55">{b}</p>
+              </div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      <PackageCompareSheet open={compareOpen} onOpenChange={setCompareOpen} travelPackage={comparePackage} />
+      {/* ===================== CONTACT ===================== */}
+      <section id="contact" className="mx-auto max-w-[1360px] px-6 py-[110px] lg:px-10">
+        <motion.div variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-8%" }} className="relative overflow-hidden rounded-[28px] bg-inkdeep px-16 py-[70px] text-paper">
+          <div className="animate-spin-slow absolute -right-[70px] -top-[90px] h-[340px] w-[340px] rounded-full border border-clay-tint/20" />
+          <div className="relative flex flex-wrap items-end justify-between gap-11">
+            <div className="max-w-[620px]">
+              <p className="mb-[22px] font-mono text-xs uppercase tracking-[0.3em] text-clay-tint">Let&apos;s plan yours</p>
+              <h2 className="mb-6 font-display text-[clamp(36px,4.8vw,64px)] font-bold leading-[0.98] tracking-[-0.025em]">Tell us your dates. We&apos;ll shape the trip.</h2>
+              <p className="text-[17px] leading-relaxed text-paper/80">One message on WhatsApp and SS Rao&apos;s team takes it from there — honest advice, no pushy sales, from people who&apos;ve run the Northeast for nearly forty years.</p>
+            </div>
+            <div className="flex min-w-[330px] flex-col gap-3.5">
+              <a href={WA_ENQUIRE} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-5 rounded-[14px] bg-clay px-[22px] py-[18px] transition-[background,transform] duration-300 hover:-translate-y-0.5 hover:bg-clay-dark">
+                <span><span className="block font-mono text-[11px] uppercase tracking-[0.12em] text-paper/80">Fastest reply</span><span className="font-display text-xl font-bold">Enquire on WhatsApp</span></span>
+                <span className="text-xl">→</span>
+              </a>
+              <a href={`tel:${PHONE_TEL}`} className="flex items-center justify-between gap-5 rounded-[14px] border border-paper/25 bg-paper/10 px-[22px] py-[18px] transition-colors hover:bg-paper/20">
+                <span><span className="block font-mono text-[11px] uppercase tracking-[0.12em] text-paper/70">Call SS Rao</span><span className="font-display text-xl font-bold">{PHONE_DISPLAY}</span></span>
+                <span className="text-xl">→</span>
+              </a>
+              <a href={`mailto:${EMAIL}`} className="flex items-center justify-between gap-5 rounded-[14px] bg-paper px-[22px] py-[18px] text-ink transition-transform hover:-translate-y-0.5">
+                <span><span className="block font-mono text-[11px] uppercase tracking-[0.12em] text-ink/55">Email us</span><span className="font-display text-lg font-bold">{EMAIL}</span></span>
+                <span className="text-xl">→</span>
+              </a>
+            </div>
+          </div>
+        </motion.div>
+      </section>
     </div>
   );
 }

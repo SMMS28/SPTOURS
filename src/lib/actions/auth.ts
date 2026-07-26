@@ -37,6 +37,11 @@ export const signUp = async (formData: FormData) => {
     redirect("/register?message=Enter%20a%20valid%20email%20and%20a%20password%20with%20at%20least%208%20characters.");
   }
 
+  // The register form also collects name + phone. Passed as signup metadata so
+  // the handle_new_user trigger writes them onto the profile row (migration 0007).
+  const fullName = String(formData.get("full_name") ?? "").trim();
+  const phone = String(formData.get("phone") ?? "").trim();
+
   const supabase = await createClient();
   const siteUrl = getSiteBaseUrl();
   const { error } = await supabase.auth.signUp({
@@ -44,6 +49,10 @@ export const signUp = async (formData: FormData) => {
     password: parsed.data.password,
     options: {
       emailRedirectTo: `${siteUrl}/auth/callback`,
+      data: {
+        ...(fullName ? { full_name: fullName } : {}),
+        ...(phone ? { phone } : {}),
+      },
     },
   });
 

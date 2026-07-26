@@ -1,68 +1,65 @@
 import Link from "next/link";
 import Image from "next/image";
+import { EMAIL, PHONE_DISPLAY, PHONE_TEL, WA_ENQUIRE } from "@/lib/site";
 
-export const SiteFooter = () => {
+export function SiteFooter() {
   return (
-    <footer className="mt-auto border-t border-border/60 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto w-full max-w-6xl px-4 py-8 text-sm text-muted-foreground sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-white/60 bg-white/72 p-5 text-sm shadow-[0_20px_45px_-30px_rgba(15,23,42,0.26)] backdrop-blur-xl">
-          <div className="flex items-center gap-3">
-            <Image
-              src="/images/logo-2026.png"
-              alt="SP Tours and Travels logo"
-              width={438}
-              height={173}
-              className="h-12 w-auto object-contain sm:h-14"
-            />
-            <div>
-              <p className="text-base font-semibold text-foreground">SP Tours & Travels</p>
-              <p className="text-xs text-muted-foreground">Trusted since 1986</p>
-            </div>
+    <footer className="bg-inkdeep px-6 pb-9 pt-[70px] text-paper/70 lg:px-10">
+      <div className="mx-auto max-w-[1360px]">
+        <div className="grid gap-10 border-b border-paper/15 pb-12 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
+          <div>
+            <span className="mb-5 inline-flex rounded-xl bg-paper px-4 py-2">
+              <Image src="/images/logo-2026.png" alt="SP Tours and Travels" width={210} height={78} className="h-11 w-auto" />
+            </span>
+            <p className="mb-1.5 font-display text-lg font-bold text-paper">Your Journey, Our Responsibility.</p>
+            <p className="text-sm leading-relaxed">Trusted since 1986 · Managing Partner: S S Rao</p>
+            <p className="max-w-[340px] text-sm leading-relaxed">
+              T1, S. R. Residency, Sri Lakshmi Nagar, Namavaram Road, Morampudi, Rajahmundry, Andhra Pradesh 533107
+            </p>
           </div>
-          <p className="mt-0.5 text-sm text-muted-foreground">Managing Partner: S S Rao</p>
-          <p className="mt-1 text-muted-foreground">&quot;Your Journey, Our Responsibility&quot;</p>
-          <div className="mt-3 grid gap-1.5 text-foreground sm:grid-cols-2">
-            <p>Phone: +91 92477 77996</p>
-            <p>Email: sptoursrjy@gmail.com</p>
-            <p>Website: www.sptours.com</p>
-            <p>Location: T1, S. R. Residency Sri Lakshmi nagar, Namavaram Road, Morampudi, RAJAHMUNDRY, ANDHRA PRADESH 533107, India</p>
-          </div>
-        </div>
 
-        <div className="mt-6 grid gap-6 pb-6 md:grid-cols-3">
+          <FooterCol title="Journeys" links={[
+            ["North Sikkim", "/packages"],
+            ["Meghalaya Explorer", "/packages"],
+            ["Discovering Arunachal", "/packages"],
+            ["The Grand Circuit", "/packages"],
+          ]} />
+
+          <FooterCol title="Company" links={[
+            ["Why us", "/#promise"],
+            ["Contact", "/contact"],
+            ["Home", "/"],
+            ["All packages", "/packages"],
+          ]} />
+
           <div>
-            <p className="font-medium text-foreground">Products</p>
-            <div className="mt-3 flex flex-col gap-2">
-              <Link href="/packages?category=holiday_packages" className="hover:text-foreground">Holiday packages</Link>
-              <Link href="/packages?category=india_tour_packages" className="hover:text-foreground">India tour packages</Link>
-              <Link href="/packages?category=international_customized_tours" className="hover:text-foreground">International customized tours</Link>
-              <Link href="/packages?category=international_tour_packages" className="hover:text-foreground">International tour packages</Link>
-            </div>
-          </div>
-          <div>
-            <p className="font-medium text-foreground">Support</p>
-            <div className="mt-3 flex flex-col gap-2">
-              <Link href="/contact" className="hover:text-foreground">Contact</Link>
-              <Link href="/faqs" className="hover:text-foreground">FAQs</Link>
-              <Link href="/privacy" className="hover:text-foreground">Privacy policy</Link>
-              <Link href="/terms" className="hover:text-foreground">Terms & conditions</Link>
-            </div>
-          </div>
-          <div>
-            <p className="font-medium text-foreground">Explore</p>
-            <div className="mt-3 flex flex-col gap-2">
-              <Link href="/services" className="hover:text-foreground">All services</Link>
-              <Link href="/travel-services" className="hover:text-foreground">Hotels & rentals</Link>
-              <Link href="/mice" className="hover:text-foreground">MICE</Link>
-              <Link href="/special-tours" className="hover:text-foreground">Special tours</Link>
+            <p className="mb-[18px] font-mono text-[11px] uppercase tracking-[0.16em] text-paper/50">Get in touch</p>
+            <div className="flex flex-col gap-3 text-[14.5px]">
+              <a href={WA_ENQUIRE} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-paper">WhatsApp us</a>
+              <a href={`tel:${PHONE_TEL}`} className="transition-colors hover:text-paper">{PHONE_DISPLAY}</a>
+              <a href={`mailto:${EMAIL}`} className="transition-colors hover:text-paper">{EMAIL}</a>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-border/60 pt-6">
-          © {new Date().getFullYear()} SP TOURS & TRAVELS. Built with Next.js + Supabase.
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-6 font-mono text-xs text-paper/50">
+          <span>© {new Date().getFullYear()} SP TOURS &amp; TRAVELS · RAJAHMUNDRY, ANDHRA PRADESH</span>
+          <span>NORTH EAST INDIA SPECIALISTS</span>
         </div>
       </div>
     </footer>
   );
-};
+}
+
+function FooterCol({ title, links }: { title: string; links: [string, string][] }) {
+  return (
+    <div>
+      <p className="mb-[18px] font-mono text-[11px] uppercase tracking-[0.16em] text-paper/50">{title}</p>
+      <div className="flex flex-col gap-3 text-[14.5px]">
+        {links.map(([label, href], i) => (
+          <Link key={`${label}-${i}`} href={href} className="transition-colors hover:text-paper">{label}</Link>
+        ))}
+      </div>
+    </div>
+  );
+}

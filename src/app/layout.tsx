@@ -1,41 +1,42 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Playfair_Display, Poppins, Roboto_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Manrope, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { ConfirmFormSubmits } from "@/components/confirm-form-submits";
-import { FlightLoader } from "@/components/flight-loader";
 import { Observability } from "@/components/observability";
 import { QuotePopup } from "@/components/quote-popup";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
 
-const appSans = Poppins({
-  variable: "--font-sans",
+const display = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const sans = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
-const appMono = Roboto_Mono({
-  variable: "--font-geist-mono",
+const mono = Space_Mono({
+  variable: "--font-space-mono",
   subsets: ["latin"],
-});
-
-const appSerif = Playfair_Display({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("http://localhost:3000"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
-    default: "SP TOURS AND TRAVELLS",
-    template: "%s | SP TOURS AND TRAVELLS",
+    default: "SP Tours & Travels — North East India specialists",
+    template: "%s | SP Tours & Travels",
   },
   description:
-    "Modern travel platform with curated packages, inquiry flow, and role-based admin management.",
+    "Handcrafted tours across the Seven Sisters — Assam, Meghalaya, Sikkim, Arunachal and beyond. Trusted since 1986.",
 };
 
+// The SiteHeader / SiteFooter chrome lives in the route-group layouts, not here:
+// (site) renders it transparent over each page's dark hero, (legacy) renders it
+// solid with a top offset, and (auth) / admin deliberately opt out entirely.
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -44,9 +45,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${appSans.variable} ${appMono.variable} ${appSerif.variable} h-full antialiased`}
+      className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col bg-paper text-ink">
         <Suspense fallback={null}>
           <Observability
             gaId={process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID}
@@ -55,12 +56,13 @@ export default function RootLayout({
             sentryDsn={process.env.NEXT_PUBLIC_SENTRY_DSN}
           />
         </Suspense>
-        <FlightLoader />
+        {/* FlightLoader intentionally not mounted: it threw a slate-950 blurred
+            scrim over the first 2.2s of every new session, which buried the
+            redesign's hero and clashed with the ivory/clay palette. The component
+            is still in src/components/flight-loader.tsx if it gets restyled. */}
         <ConfirmFormSubmits />
         <QuotePopup />
-        <SiteHeader />
-        <main className="flex-1 pt-28 sm:pt-32 lg:pt-36">{children}</main>
-        <SiteFooter />
+        {children}
       </body>
     </html>
   );

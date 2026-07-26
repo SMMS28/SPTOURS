@@ -34,6 +34,20 @@ const getFileExtension = (pathname: string) => {
   return fileName.slice(dotIndex + 1).toLowerCase();
 };
 
+/**
+ * Remote host permitted to serve package images — kept in step with the
+ * remotePatterns allowlist in next.config.ts.
+ */
+const allowedRemoteHost = (() => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!url) return null;
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return null;
+  }
+})();
+
 export const getSafePackageImageSrc = (src: string | null | undefined, fallbackKey: string) => {
   if (!src) {
     return getFallbackPackageImage(fallbackKey);
@@ -50,12 +64,22 @@ export const getSafePackageImageSrc = (src: string | null | undefined, fallbackK
 
   try {
     const parsed = new URL(trimmed);
-    if (!["http:", "https:"].includes(parsed.protocol)) {
+
+    // https only — plaintext image fetches were previously allowed too.
+    if (parsed.protocol !== "https:") {
       return getFallbackPackageImage(fallbackKey);
     }
 
     const extension = getFileExtension(parsed.pathname);
     if (!imageExtensions.has(extension)) {
+      return getFallbackPackageImage(fallbackKey);
+    }
+
+    // The legacy CSV import left cover_image values pointing at third-party sites
+    // (e.g. southerntravelsindia.com). Those hosts time out, which made the image
+    // optimiser spend ~7.6s per request before returning 500 and rendering a
+    // broken card. Anything off the allowlist falls back to a bundled image.
+    if (!allowedRemoteHost || parsed.hostname !== allowedRemoteHost) {
       return getFallbackPackageImage(fallbackKey);
     }
 

@@ -12,6 +12,11 @@
 
 # testing
 /coverage
+/test-results
+/playwright-report
+
+# raw redesign source drop — already integrated into src/, kept locally only
+/sptours-nextjs
 
 # next.js
 /.next/
