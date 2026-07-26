@@ -8,6 +8,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { hasSupabaseEnv } from "@/lib/env";
 import { sendBookingNotifications } from "@/lib/notifications";
 import { createClient } from "@/lib/supabase/server";
+import { isMissingLocationColumn, parseLeadLocation } from "@/lib/location";
 
 const bookingSchema = z.object({
   packageId: z.string().uuid(),
@@ -75,20 +76,36 @@ export const createBookingFromPlanner = async (formData: FormData) => {
     .slice(0, 8)
     .toUpperCase()}`;
 
-  const { data: booking, error: bookingError } = await supabase
+  const baseBooking = {
+    user_id: user.id,
+    package_id: parsed.data.packageId,
+    travelers_count: parsed.data.travelersCount,
+    travel_date: parsed.data.travelDate,
+    total_amount: totalAmount,
+    status: "pending",
+    booking_reference: bookingReference,
+    referral_code: parsed.data.referralCode || null,
+  };
+
+  // Optional, explicitly consented coordinates (migration 0008).
+  const location = parseLeadLocation(formData);
+
+  let { data: booking, error: bookingError } = await supabase
     .from("bookings")
-    .insert({
-      user_id: user.id,
-      package_id: parsed.data.packageId,
-      travelers_count: parsed.data.travelersCount,
-      travel_date: parsed.data.travelDate,
-      total_amount: totalAmount,
-      status: "pending",
-      booking_reference: bookingReference,
-      referral_code: parsed.data.referralCode || null,
-    })
+    .insert({ ...baseBooking, ...(location ?? {}) })
     .select("id,booking_reference")
     .single();
+
+  // Don't drop a booking because migration 0008 is still pending.
+  if (isMissingLocationColumn(bookingError?.message)) {
+    const retry = await supabase
+      .from("bookings")
+      .insert(baseBooking)
+      .select("id,booking_reference")
+      .single();
+    booking = retry.data;
+    bookingError = retry.error;
+  }
 
   if (bookingError || !booking) {
     console.error("Booking insert failed", bookingError);

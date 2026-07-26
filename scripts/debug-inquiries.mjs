@@ -3,6 +3,18 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+// Credentials come from the environment. They used to be hardcoded here, which
+// published a working admin password to a public repository.
+const requireEnv = (name) => {
+  const value = process.env[name];
+  if (!value) {
+    console.error(`Missing required env var ${name}. Set it before running this script.`);
+    process.exit(1);
+  }
+  return value;
+};
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const envPath = path.join(__dirname, "..", ".env.local");
@@ -27,8 +39,8 @@ if (!url || !key) {
   process.exit(1);
 }
 
-const adminEmail = "Sptoursrjy@gmail.com";
-const adminPassword = "Sptours@2026";
+const adminEmail = requireEnv("ADMIN_EMAIL");
+const adminPassword = requireEnv("ADMIN_PASSWORD");
 
 const logResult = (label, res) => {
   if (res.error) {

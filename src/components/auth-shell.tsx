@@ -45,9 +45,9 @@ export function AuthShell({
           <Image
             src="/images/logo-2026.png"
             alt="SP Tours and Travels"
-            width={240}
-            height={90}
-            className="h-[52px] w-auto"
+            width={640}
+            height={286}
+            className="h-[56px] w-auto"
             priority
           />
         </Link>

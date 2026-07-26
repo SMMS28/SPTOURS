@@ -8,6 +8,7 @@ import { wa, PHONE_TEL } from "@/lib/site";
 import type { PackageView } from "@/lib/packages-view";
 import { createBookingFromPlanner } from "@/lib/actions/bookings";
 import { toggleFavoritePackage } from "@/lib/actions/favorites";
+import { LocationConsent } from "@/components/location-consent";
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -49,6 +50,7 @@ type Props = {
   todayIso: string;
   booking?: string;
   saved?: string;
+  signedIn: boolean;
 };
 
 export function PackageDetail({
@@ -61,6 +63,7 @@ export function PackageDetail({
   todayIso,
   booking,
   saved,
+  signedIn,
 }: Props) {
   const [open, setOpen] = useState(0);
 
@@ -324,6 +327,8 @@ export function PackageDetail({
                   />
                 </div>
 
+                <LocationConsent />
+
                 <button
                   type="submit"
                   className="mt-1 flex h-[54px] items-center justify-center rounded-[14px] bg-clay text-[15.5px] font-bold text-paper shadow-[0_14px_32px_-16px_rgba(155,106,76,0.9)] transition-[background,transform] duration-300 hover:-translate-y-0.5 hover:bg-clay-dark"
@@ -349,10 +354,10 @@ export function PackageDetail({
               Enquire on WhatsApp
             </a>
             <a
-              href={`tel:${PHONE_TEL}`}
+              href={signedIn ? `tel:${PHONE_TEL}` : "/login?next=%2Fcontact"}
               className="mt-3 flex h-[52px] items-center justify-center rounded-[14px] border-[1.5px] border-ink/15 text-[15px] font-bold transition-colors hover:bg-[#f0e9da]"
             >
-              Call SS Rao
+              {signedIn ? "Call SS Rao" : "Sign in to call"}
             </a>
 
             <div className="mt-6 flex flex-col gap-3.5 border-t border-ink/10 pt-5">

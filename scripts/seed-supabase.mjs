@@ -3,6 +3,18 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+// Credentials come from the environment. They used to be hardcoded here, which
+// published a working admin password to a public repository.
+const requireEnv = (name) => {
+  const value = process.env[name];
+  if (!value) {
+    console.error(`Missing required env var ${name}. Set it before running this script.`);
+    process.exit(1);
+  }
+  return value;
+};
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const envPath = path.join(__dirname, "..", ".env.local");
@@ -68,8 +80,8 @@ const supabase = createClient(supabaseUrl, serviceRoleKey || publishableKey, {
 });
 
 if (!serviceRoleKey) {
-  const adminEmail = process.env.SEED_ADMIN_EMAIL || "Sptoursrjy@gmail.com";
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD || "Sptours@2026";
+  const adminEmail = requireEnv("SEED_ADMIN_EMAIL");
+  const adminPassword = requireEnv("SEED_ADMIN_PASSWORD");
   const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
     email: adminEmail,
     password: adminPassword,

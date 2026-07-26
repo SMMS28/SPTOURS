@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPublishedPackageBySlug, getPublishedPackages } from "@/lib/data/packages";
 import { getFavoritePackageIds } from "@/lib/data/favorites";
+import { getCurrentUser } from "@/lib/auth";
 import { getSafePackageImageSrc } from "@/lib/data/media";
 import { toPackageView, toPackageViews } from "@/lib/packages-view";
 import { PackageDetail } from "@/components/package-detail";
@@ -46,9 +47,10 @@ export default async function PackagePage({
   const row = await getPublishedPackageBySlug(slug);
   if (!row) notFound();
 
-  const [allRows, favoriteIds] = await Promise.all([
+  const [allRows, favoriteIds, user] = await Promise.all([
     getPublishedPackages(),
     getFavoritePackageIds(),
+    getCurrentUser(),
   ]);
 
   const pkg = toPackageView(row);
@@ -82,6 +84,7 @@ export default async function PackagePage({
       todayIso={new Date().toISOString().slice(0, 10)}
       booking={query.booking}
       saved={query.saved}
+      signedIn={Boolean(user)}
     />
   );
 }

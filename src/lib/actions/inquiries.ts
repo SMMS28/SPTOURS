@@ -6,6 +6,7 @@ import { z } from "zod";
 import { getCurrentProfileRole } from "@/lib/auth";
 import { hasSupabaseEnv } from "@/lib/env";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { isMissingLocationColumn, parseLeadLocation } from "@/lib/location";
 
 const inquirySchema = z.object({
   fullName: z.string().min(2),
@@ -76,17 +77,39 @@ export const submitInquiry = async (formData: FormData) => {
     redirect("/contact?status=sent");
   }
 
+  // Optional, explicitly consented coordinates (migration 0008).
+  const location = parseLeadLocation(formData);
+  const payloadWithLocation = { ...basePayload, ...(location ?? {}) };
+
   let { error } = await supabase.from("inquiries").insert({
-    ...basePayload,
+    ...payloadWithLocation,
     user_id: user?.id ?? null,
   });
 
-  if (error?.code === "23503" || /foreign key/i.test(error?.message ?? "")) {
+  // Never lose a lead because migration 0008 is still pending — drop the
+  // location fields and retry.
+  if (isMissingLocationColumn(error?.message)) {
     const retry = await supabase.from("inquiries").insert({
       ...basePayload,
+      user_id: user?.id ?? null,
+    });
+    error = retry.error;
+  }
+
+  if (error?.code === "23503" || /foreign key/i.test(error?.message ?? "")) {
+    const retry = await supabase.from("inquiries").insert({
+      ...payloadWithLocation,
       user_id: null,
     });
     error = retry.error;
+
+    if (isMissingLocationColumn(error?.message)) {
+      const plain = await supabase.from("inquiries").insert({
+        ...basePayload,
+        user_id: null,
+      });
+      error = plain.error;
+    }
   }
 
   if (error) {

@@ -1,15 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
-import { EMAIL, PHONE_DISPLAY, PHONE_TEL, WA_ENQUIRE } from "@/lib/site";
+import { EMAIL, PHONE_TEL, WA_ENQUIRE } from "@/lib/site";
+import { getCurrentUser } from "@/lib/auth";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  // Calling is a signed-in affordance, so the number is not published here.
+  const signedIn = Boolean(await getCurrentUser());
   return (
     <footer className="bg-inkdeep px-6 pb-9 pt-[70px] text-paper/70 lg:px-10">
       <div className="mx-auto max-w-[1360px]">
         <div className="grid gap-10 border-b border-paper/15 pb-12 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
           <div>
             <span className="mb-5 inline-flex rounded-xl bg-paper px-4 py-2">
-              <Image src="/images/logo-2026.png" alt="SP Tours and Travels" width={210} height={78} className="h-11 w-auto" />
+              <Image src="/images/logo-2026.png" alt="SP Tours and Travels" width={640} height={286} className="h-12 w-auto" />
             </span>
             <p className="mb-1.5 font-display text-lg font-bold text-paper">Your Journey, Our Responsibility.</p>
             <p className="text-sm leading-relaxed">Trusted since 1986 · Managing Partner: S S Rao</p>
@@ -36,7 +39,11 @@ export function SiteFooter() {
             <p className="mb-[18px] font-mono text-[11px] uppercase tracking-[0.16em] text-paper/50">Get in touch</p>
             <div className="flex flex-col gap-3 text-[14.5px]">
               <a href={WA_ENQUIRE} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-paper">WhatsApp us</a>
-              <a href={`tel:${PHONE_TEL}`} className="transition-colors hover:text-paper">{PHONE_DISPLAY}</a>
+              {signedIn ? (
+                <a href={`tel:${PHONE_TEL}`} className="transition-colors hover:text-paper">Call SS Rao</a>
+              ) : (
+                <Link href="/login?next=%2Fcontact" className="transition-colors hover:text-paper">Sign in to call</Link>
+              )}
               <a href={`mailto:${EMAIL}`} className="transition-colors hover:text-paper">{EMAIL}</a>
             </div>
           </div>

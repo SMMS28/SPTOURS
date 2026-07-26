@@ -3,6 +3,18 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+// Credentials come from the environment. They used to be hardcoded here, which
+// published a working admin password to a public repository.
+const requireEnv = (name) => {
+  const value = process.env[name];
+  if (!value) {
+    console.error(`Missing required env var ${name}. Set it before running this script.`);
+    process.exit(1);
+  }
+  return value;
+};
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const envPath = path.join(__dirname, "..", ".env.local");
@@ -20,8 +32,8 @@ if (fs.existsSync(envPath)) {
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-const email = "Sptoursrjy@gmail.com";
-const password = "Sptours@2026";
+const email = requireEnv("ADMIN_EMAIL");
+const password = requireEnv("ADMIN_PASSWORD");
 
 if (!url || !key) {
   console.error("Missing Supabase env vars");

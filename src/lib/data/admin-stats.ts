@@ -20,6 +20,10 @@ export type AdminInquiryRow = {
   packageTitle: string | null;
   createdAt: string | null;
   status: string;
+  /** Present only when the visitor opted in and migration 0008 has been applied. */
+  latitude: number | null;
+  longitude: number | null;
+  locationAccuracyM: number | null;
 };
 
 export type AdminBookingRow = {
@@ -110,11 +114,24 @@ export const getAdminStats = async (): Promise<AdminStats> => {
           .select("package_id,packages(title)")
           .gte("created_at", since30)
           .not("package_id", "is", null),
+        // Location columns arrive in migration 0008. Ask for them, and fall back
+        // to the base columns if they aren't there yet, so the panel keeps
+        // working either way.
         supabase
           .from("inquiries")
-          .select("id,full_name,email,phone,status,created_at,packages(title)")
+          .select(
+            "id,full_name,email,phone,status,created_at,latitude,longitude,location_accuracy_m,packages(title)",
+          )
           .order("created_at", { ascending: false })
-          .limit(8),
+          .limit(8)
+          .then(async (result) => {
+            if (!result.error) return result;
+            return supabase
+              .from("inquiries")
+              .select("id,full_name,email,phone,status,created_at,packages(title)")
+              .order("created_at", { ascending: false })
+              .limit(8);
+          }),
         supabase
           .from("bookings")
           .select("id,booking_reference,status,travelers_count,total_amount,packages(title)")
@@ -162,14 +179,21 @@ export const getAdminStats = async (): Promise<AdminStats> => {
       ),
       inquiriesByDay: buckets.map(({ label, count }) => ({ label, count })),
       topPackages,
-      recentInquiries: (recentInq.data ?? []).map((row) => ({
-        id: String(row.id),
-        fullName: String(row.full_name ?? "—"),
-        contact: String(row.phone || row.email || "—"),
-        packageTitle: firstOf(row.packages)?.title ?? null,
-        createdAt: row.created_at ? String(row.created_at) : null,
-        status: String(row.status ?? "new"),
-      })),
+      recentInquiries: (recentInq.data ?? []).map((row) => {
+        const r = row as Record<string, unknown>;
+        const num = (v: unknown) => (v === null || v === undefined ? null : Number(v));
+        return {
+          id: String(r.id),
+          fullName: String(r.full_name ?? "—"),
+          contact: String(r.phone || r.email || "—"),
+          packageTitle: firstOf(r.packages)?.title ?? null,
+          createdAt: r.created_at ? String(r.created_at) : null,
+          status: String(r.status ?? "new"),
+          latitude: num(r.latitude),
+          longitude: num(r.longitude),
+          locationAccuracyM: num(r.location_accuracy_m),
+        };
+      }),
       recentBookings: (recentBk.data ?? []).map((row) => ({
         id: String(row.id),
         reference: row.booking_reference ? String(row.booking_reference) : null,

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, type Variants } from "framer-motion";
-import { HERO_SLIDES, WA_ENQUIRE, PHONE_DISPLAY, PHONE_TEL, EMAIL } from "@/lib/site";
+import { HERO_SLIDES, WA_ENQUIRE, PHONE_TEL, EMAIL } from "@/lib/site";
 import { bentoSpan, type PackageView } from "@/lib/packages-view";
 
 const reveal: Variants = {
@@ -12,7 +12,13 @@ const reveal: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
 };
 
-export function HomeExperience({ packages }: { packages: PackageView[] }) {
+export function HomeExperience({
+  packages,
+  signedIn,
+}: {
+  packages: PackageView[];
+  signedIn: boolean;
+}) {
   const [slide, setSlide] = useState(0);
   const promiseRef = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll({ target: promiseRef, offset: ["start end", "end start"] });
@@ -83,10 +89,6 @@ export function HomeExperience({ packages }: { packages: PackageView[] }) {
                     <p className="font-display text-[22px] font-semibold text-paper">{HERO_SLIDES[slide].caption}</p>
                   </motion.div>
                 </AnimatePresence>
-              </div>
-              <div className="mt-8 inline-flex flex-col items-center gap-2">
-                <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-paper/60 [writing-mode:vertical-rl]">Scroll</span>
-                <span className="animate-bob h-10 w-px bg-[linear-gradient(rgba(245,240,230,0.7),transparent)]" />
               </div>
             </div>
           </div>
@@ -207,8 +209,18 @@ export function HomeExperience({ packages }: { packages: PackageView[] }) {
                 <span><span className="block font-mono text-[11px] uppercase tracking-[0.12em] text-paper/80">Fastest reply</span><span className="font-display text-xl font-bold">Enquire on WhatsApp</span></span>
                 <span className="text-xl">→</span>
               </a>
-              <a href={`tel:${PHONE_TEL}`} className="flex items-center justify-between gap-5 rounded-[14px] border border-paper/25 bg-paper/10 px-[22px] py-[18px] transition-colors hover:bg-paper/20">
-                <span><span className="block font-mono text-[11px] uppercase tracking-[0.12em] text-paper/70">Call SS Rao</span><span className="font-display text-xl font-bold">{PHONE_DISPLAY}</span></span>
+              <a
+                href={signedIn ? `tel:${PHONE_TEL}` : "/login?next=%2Fcontact"}
+                className="flex items-center justify-between gap-5 rounded-[14px] border border-paper/25 bg-paper/10 px-[22px] py-[18px] transition-colors hover:bg-paper/20"
+              >
+                <span>
+                  <span className="block font-mono text-[11px] uppercase tracking-[0.12em] text-paper/70">
+                    {signedIn ? "Tap to dial" : "Members only"}
+                  </span>
+                  <span className="font-display text-xl font-bold">
+                    {signedIn ? "Call SS Rao" : "Sign in to call"}
+                  </span>
+                </span>
                 <span className="text-xl">→</span>
               </a>
               <a href={`mailto:${EMAIL}`} className="flex items-center justify-between gap-5 rounded-[14px] bg-paper px-[22px] py-[18px] text-ink transition-transform hover:-translate-y-0.5">

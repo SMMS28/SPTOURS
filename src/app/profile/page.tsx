@@ -146,8 +146,8 @@ export default async function ProfilePage({
             <Image
               src="/images/logo-2026.png"
               alt="SP Tours and Travels"
-              width={220}
-              height={82}
+              width={640}
+              height={286}
               className="h-[46px] w-auto"
               priority
             />

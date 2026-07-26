@@ -76,9 +76,9 @@ export default async function AdminPage() {
             <Image
               src="/images/logo-2026.png"
               alt="SP Tours"
-              width={170}
-              height={64}
-              className="h-[34px] w-auto"
+              width={640}
+              height={286}
+              className="h-[38px] w-auto"
             />
           </span>
         </div>
@@ -230,6 +230,7 @@ export default async function AdminPage() {
                       <th className={th}>Traveller</th>
                       <th className={th}>Contact</th>
                       <th className={th}>Package</th>
+                      <th className={th}>Location</th>
                       <th className={th}>When</th>
                       <th className={th}>Status</th>
                     </tr>
@@ -240,6 +241,25 @@ export default async function AdminPage() {
                         <td className="px-4 py-[15px] font-semibold">{row.fullName}</td>
                         <td className="px-4 py-[15px] text-mutedfg">{row.contact}</td>
                         <td className="px-4 py-[15px] text-mutedfg">{row.packageTitle ?? "General"}</td>
+                        <td className="px-4 py-[15px]">
+                          {row.latitude !== null && row.longitude !== null ? (
+                            <a
+                              href={`https://www.google.com/maps?q=${row.latitude},${row.longitude}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-semibold text-clay"
+                              title={
+                                row.locationAccuracyM
+                                  ? `Shared by the visitor · ±${Math.round(row.locationAccuracyM)}m`
+                                  : "Shared by the visitor"
+                              }
+                            >
+                              Map ↗
+                            </a>
+                          ) : (
+                            <span className="text-[#b6b0a2]">—</span>
+                          )}
+                        </td>
                         <td className="px-4 py-[15px] text-mutedfg">
                           {row.createdAt
                             ? new Date(row.createdAt).toLocaleDateString("en-IN", {

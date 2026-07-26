@@ -319,24 +319,46 @@
   .animate-spin-slow { animation: spin-slow 55s linear infinite; }
 }
 
-/* ---- scrollbar (redesign ivory) ---- */
+/* ---- scrollbar: invisible at rest, revealed on hover ----
+   The full-bleed hero runs edge to edge, where a permanently visible ivory bar
+   read as a seam down the right side. scrollbar-gutter: stable on html means
+   revealing it costs no layout shift. */
 ::-webkit-scrollbar {
   width: 11px;
   height: 11px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #ece5d7;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c9bda6;
+  background: transparent;
   border-radius: 999px;
-  border: 3px solid #ece5d7;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  transition: background 200ms ease;
+}
+
+html:hover::-webkit-scrollbar-thumb,
+*:hover::-webkit-scrollbar-thumb {
+  background: #c9bda6;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #9b6a4c;
+  background-clip: padding-box;
+}
+
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+html:hover {
+  scrollbar-color: #c9bda6 transparent;
 }
 
 @media (prefers-reduced-motion: reduce) {

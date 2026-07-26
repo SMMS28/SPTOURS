@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getPublishedPackages } from "@/lib/data/packages";
+import { getCurrentUser } from "@/lib/auth";
 import { toPackageViews } from "@/lib/packages-view";
 import { ContactExperience, type ContactPackageOption } from "@/components/contact-experience";
 
@@ -14,7 +15,11 @@ export default async function ContactPage({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
-  const [params, rows] = await Promise.all([searchParams, getPublishedPackages()]);
+  const [params, rows, user] = await Promise.all([
+    searchParams,
+    getPublishedPackages(),
+    getCurrentUser(),
+  ]);
 
   const packages: ContactPackageOption[] = toPackageViews(rows).map((pkg) => ({
     id: pkg.id,
@@ -23,5 +28,7 @@ export default async function ContactPage({
     bookable: pkg.bookable,
   }));
 
-  return <ContactExperience packages={packages} status={params.status} />;
+  return (
+    <ContactExperience packages={packages} status={params.status} signedIn={Boolean(user)} />
+  );
 }

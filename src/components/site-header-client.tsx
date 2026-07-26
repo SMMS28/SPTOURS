@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Phone } from "lucide-react";
 import { signOut } from "@/lib/actions/auth";
-import { PHONE_DISPLAY, PHONE_TEL, WA_PLAN } from "@/lib/site";
+import { PHONE_TEL, WA_PLAN } from "@/lib/site";
 
 /** Header height on desktop — the /packages filter bar sticks directly below it. */
 export const HEADER_H = 72;
@@ -66,16 +66,16 @@ export function SiteHeaderClient({
       <div className="mx-auto flex max-w-[1360px] items-center justify-between px-6 py-3.5 lg:px-10">
         <Link
           href="/"
-          className="inline-flex items-center rounded-xl bg-paper/95 px-4 py-1.5 shadow-[0_6px_20px_-12px_rgba(0,0,0,0.5)]"
+          className="inline-flex items-center rounded-xl bg-paper/95 px-3 py-1.5 shadow-[0_6px_20px_-12px_rgba(0,0,0,0.5)]"
           aria-label="SP Tours & Travels — home"
         >
           <Image
             src="/images/logo-2026.png"
             alt="SP Tours and Travels"
-            width={220}
-            height={82}
+            width={640}
+            height={286}
             priority
-            className="h-[46px] w-auto"
+            className="h-[44px] w-auto sm:h-[48px]"
           />
         </Link>
 
@@ -97,12 +97,16 @@ export function SiteHeaderClient({
         </nav>
 
         <div className="flex items-center gap-4">
-          <a
-            href={`tel:${PHONE_TEL}`}
-            className={`hidden font-mono text-[13px] transition-colors duration-500 sm:inline ${linkColor}`}
-          >
-            {PHONE_DISPLAY}
-          </a>
+          {/* Calling is offered to signed-in visitors only, so the number isn't
+              scraped off a public page. Anonymous visitors get the WhatsApp CTA. */}
+          {isAuthenticated ? (
+            <a
+              href={`tel:${PHONE_TEL}`}
+              className={`hidden text-[13.5px] font-semibold transition-colors duration-500 hover:opacity-60 sm:inline ${linkColor}`}
+            >
+              Call SS Rao
+            </a>
+          ) : null}
 
           {!isAuthenticated ? (
             <Link
@@ -149,10 +153,12 @@ export function SiteHeaderClient({
               {l.label}
             </Link>
           ))}
-          <a href={`tel:${PHONE_TEL}`} className="inline-flex items-center gap-1.5">
-            <Phone className="h-3.5 w-3.5" />
-            Call
-          </a>
+          {isAuthenticated ? (
+            <a href={`tel:${PHONE_TEL}`} className="inline-flex items-center gap-1.5">
+              <Phone className="h-3.5 w-3.5" />
+              Call SS Rao
+            </a>
+          ) : null}
           {!isAuthenticated ? (
             <Link href="/login">Sign in</Link>
           ) : (

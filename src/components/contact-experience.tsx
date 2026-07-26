@@ -3,8 +3,9 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { motion, type Variants } from "framer-motion";
-import { wa, WA_ENQUIRE, PHONE_DISPLAY, PHONE_TEL, EMAIL } from "@/lib/site";
+import { wa, WA_ENQUIRE, PHONE_TEL, EMAIL } from "@/lib/site";
 import { submitInquiry } from "@/lib/actions/inquiries";
+import { LocationConsent } from "@/components/location-consent";
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -52,9 +53,11 @@ export type ContactPackageOption = { id: string; title: string; duration: string
 export function ContactExperience({
   packages,
   status,
+  signedIn,
 }: {
   packages: ContactPackageOption[];
   status?: string;
+  signedIn: boolean;
 }) {
   const [form, setForm] = useState({
     name: "",
@@ -223,6 +226,10 @@ export function ContactExperience({
               />
             </div>
 
+            <div className="mt-[18px]">
+              <LocationConsent />
+            </div>
+
             <button
               type="submit"
               className="mt-6 h-[58px] w-full rounded-[14px] bg-clay text-base font-bold text-paper shadow-[0_16px_38px_-18px_rgba(155,106,76,0.9)] transition-[background,transform] duration-300 hover:-translate-y-0.5 hover:bg-clay-dark"
@@ -260,15 +267,15 @@ export function ContactExperience({
           >
             <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.14em] text-paper/80">Fastest reply</p>
             <p className="mb-1 font-display text-2xl font-bold">Chat on WhatsApp</p>
-            <p className="text-[13.5px] text-paper/85">{PHONE_DISPLAY} · replies in minutes →</p>
+            <p className="text-[13.5px] text-paper/85">Replies in minutes →</p>
           </a>
           <div className="grid grid-cols-2 gap-3.5">
             <a
-              href={`tel:${PHONE_TEL}`}
+              href={signedIn ? `tel:${PHONE_TEL}` : "/login?next=%2Fcontact"}
               className="block rounded-[18px] border border-ink/10 bg-white p-[22px] transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-30px_rgba(20,17,11,0.4)]"
             >
-              <p className="mb-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-clay">Call SS Rao</p>
-              <p className="font-display text-[17px] font-bold leading-tight">{PHONE_DISPLAY}</p>
+              <p className="mb-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-clay">Phone</p>
+              <p className="font-display text-[17px] font-bold leading-tight">{signedIn ? "Call SS Rao" : "Sign in to call"}</p>
             </a>
             <a
               href={`mailto:${EMAIL}`}
