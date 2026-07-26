@@ -63,6 +63,7 @@ export default async function ProfilePage({
     full_name: string | null;
     phone?: string | null;
     city?: string | null;
+    avatar_url?: string | null;
     created_at: string | null;
   } | null = null;
   let favorites: { id: string; packages: unknown }[] = [];
@@ -87,14 +88,14 @@ export default async function ProfilePage({
         // blank — fall back to the columns that have always existed.
         supabase
           .from("profiles")
-          .select("full_name,phone,city,created_at")
+          .select("full_name,phone,city,avatar_url,created_at")
           .eq("id", user.id)
           .maybeSingle()
           .then(async (result) => {
             if (!result.error) return result;
             return supabase
               .from("profiles")
-              .select("full_name,created_at")
+              .select("full_name,avatar_url,created_at")
               .eq("id", user.id)
               .maybeSingle();
           }),
@@ -187,9 +188,20 @@ export default async function ProfilePage({
             ) : null}
           </nav>
           <div className="flex items-center gap-3.5">
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-clay text-sm font-bold text-paper">
-              {initials}
-            </span>
+            {profile?.avatar_url ? (
+              <Image
+                src={profile.avatar_url}
+                alt={displayName}
+                width={40}
+                height={40}
+                className="h-10 w-10 rounded-full object-cover"
+                unoptimized
+              />
+            ) : (
+              <span className="grid h-10 w-10 place-items-center rounded-full bg-clay text-sm font-bold text-paper">
+                {initials}
+              </span>
+            )}
             <form action={signOut} data-confirm-message="Confirm logout?">
               <button type="submit" className="text-sm font-semibold text-[#4c5142]">
                 Logout
