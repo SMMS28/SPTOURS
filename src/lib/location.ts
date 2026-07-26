@@ -49,3 +49,17 @@ export const parseLeadLocation = (formData: FormData): LeadLocation | null => {
  */
 export const isMissingLocationColumn = (message: string | undefined | null) =>
   Boolean(message && /(column|schema cache).*(latitude|longitude|location_)/i.test(message));
+
+/**
+ * True when Postgres rejected a statement because a column doesn't exist at all
+ * (42703) — i.e. a migration this code expects hasn't been applied. Used to retry
+ * with a reduced payload rather than failing the user's action.
+ */
+export const isMissingColumn = (
+  error: { code?: string | null; message?: string | null } | null | undefined,
+) =>
+  Boolean(
+    error &&
+      (error.code === "42703" ||
+        (error.message && /(column .* does not exist|schema cache)/i.test(error.message))),
+  );

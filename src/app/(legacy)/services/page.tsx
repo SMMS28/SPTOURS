@@ -9,16 +9,16 @@ export const metadata = {
 export default function ServicesPage() {
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-semibold">Travel services</h1>
-      <p className="mt-2 max-w-3xl text-muted-foreground">
+      <h1 className="font-display text-3xl font-semibold">Travel services</h1>
+      <p className="mt-2 max-w-3xl text-mutedfg">
         Explore services mapped to your package catalog and quickly jump to the right tour category.
       </p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {productOfferings.map((item) => (
-          <article key={item.title} className="flex h-full flex-col rounded-lg border bg-card p-5">
+          <article key={item.title} className="flex h-full flex-col rounded-lg border bg-white p-5">
             <h2 className="text-lg font-semibold">{item.title}</h2>
-            <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
+            <p className="mt-2 text-sm text-mutedfg">{item.description}</p>
             <Link href={item.href} className="mt-4 inline-flex w-fit rounded-md border px-3 py-2 text-sm font-medium">
               Explore
             </Link>

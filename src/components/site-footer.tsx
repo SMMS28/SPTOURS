@@ -12,7 +12,7 @@ export async function SiteFooter() {
         <div className="grid gap-10 border-b border-paper/15 pb-12 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
           <div>
             <span className="mb-5 inline-flex rounded-xl bg-paper px-4 py-2">
-              <Image src="/images/logo-2026.png" alt="SP Tours and Travels" width={640} height={286} className="h-12 w-auto" />
+              <Image src="/images/logo-2026.png" alt="SP Tours and Travels" width={640} height={286} className="h-14 w-auto" />
             </span>
             <p className="mb-1.5 font-display text-lg font-bold text-paper">Your Journey, Our Responsibility.</p>
             <p className="text-sm leading-relaxed">Trusted since 1986 · Managing Partner: S S Rao</p>

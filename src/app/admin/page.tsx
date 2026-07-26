@@ -78,7 +78,7 @@ export default async function AdminPage() {
               alt="SP Tours"
               width={640}
               height={286}
-              className="h-[38px] w-auto"
+              className="h-[44px] w-auto"
             />
           </span>
         </div>

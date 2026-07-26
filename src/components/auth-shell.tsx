@@ -47,7 +47,7 @@ export function AuthShell({
             alt="SP Tours and Travels"
             width={640}
             height={286}
-            className="h-[56px] w-auto"
+            className="h-[64px] w-auto"
             priority
           />
         </Link>

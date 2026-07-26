@@ -9,7 +9,7 @@ import { signOut } from "@/lib/actions/auth";
 import { PHONE_TEL, WA_PLAN } from "@/lib/site";
 
 /** Header height on desktop — the /packages filter bar sticks directly below it. */
-export const HEADER_H = 72;
+export const HEADER_H = 80;
 
 const LINKS = [
   { href: "/packages", label: "Journeys" },
@@ -63,10 +63,10 @@ export function SiteHeaderClient({
           : "border-transparent bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-[1360px] items-center justify-between px-6 py-3.5 lg:px-10">
+      <div className="mx-auto flex max-w-[1360px] items-center justify-between px-6 py-2.5 lg:px-10">
         <Link
           href="/"
-          className="inline-flex items-center rounded-xl bg-paper/95 px-3 py-1.5 shadow-[0_6px_20px_-12px_rgba(0,0,0,0.5)]"
+          className="inline-flex items-center rounded-xl bg-paper/95 px-2.5 py-1 shadow-[0_6px_20px_-12px_rgba(0,0,0,0.5)]"
           aria-label="SP Tours & Travels — home"
         >
           <Image
@@ -75,7 +75,7 @@ export function SiteHeaderClient({
             width={640}
             height={286}
             priority
-            className="h-[44px] w-auto sm:h-[48px]"
+            className="h-[50px] w-auto sm:h-[58px]"
           />
         </Link>
 
@@ -102,9 +102,11 @@ export function SiteHeaderClient({
           {isAuthenticated ? (
             <a
               href={`tel:${PHONE_TEL}`}
-              className={`hidden text-[13.5px] font-semibold transition-colors duration-500 hover:opacity-60 sm:inline ${linkColor}`}
+              title="Call SS Rao"
+              className={`hidden items-center gap-1.5 text-[14px] font-semibold transition-colors duration-500 hover:opacity-60 sm:inline-flex ${linkColor}`}
             >
-              Call SS Rao
+              <Phone className="h-3.5 w-3.5" />
+              SS Rao
             </a>
           ) : null}
 
@@ -156,7 +158,7 @@ export function SiteHeaderClient({
           {isAuthenticated ? (
             <a href={`tel:${PHONE_TEL}`} className="inline-flex items-center gap-1.5">
               <Phone className="h-3.5 w-3.5" />
-              Call SS Rao
+              SS Rao
             </a>
           ) : null}
           {!isAuthenticated ? (

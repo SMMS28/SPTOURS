@@ -129,7 +129,7 @@ export function PackageDetail({
       </section>
 
       {/* body */}
-      <section className="mx-auto grid max-w-[1360px] items-start gap-[60px] px-6 pb-10 pt-[70px] lg:grid-cols-[1fr_380px] lg:px-10">
+      <section className="mx-auto grid max-w-[1360px] grid-cols-1 items-start gap-[60px] px-6 pb-10 pt-[70px] lg:grid-cols-[minmax(0,1fr)_380px] lg:px-10">
         <div>
           {notice ? (
             <p className="mb-8 rounded-xl border border-clay/30 bg-clay/10 px-4 py-3 text-[14px] text-[#5b4636]">

@@ -4,7 +4,6 @@ import { Bricolage_Grotesque, Manrope, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { ConfirmFormSubmits } from "@/components/confirm-form-submits";
 import { Observability } from "@/components/observability";
-import { QuotePopup } from "@/components/quote-popup";
 
 const display = Bricolage_Grotesque({
   variable: "--font-bricolage",
@@ -61,7 +60,10 @@ export default function RootLayout({
             redesign's hero and clashed with the ivory/clay palette. The component
             is still in src/components/flight-loader.tsx if it gets restyled. */}
         <ConfirmFormSubmits />
-        <QuotePopup />
+        {/* QuotePopup intentionally not mounted: it opened an unsolicited modal 60s
+            into every session, including straight after signing in. The component
+            remains in src/components/quote-popup.tsx if it is ever wanted behind an
+            explicit trigger. */}
         {children}
       </body>
     </html>

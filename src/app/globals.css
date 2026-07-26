@@ -71,30 +71,35 @@
   --color-hairline: rgba(23, 19, 13, 0.12);
 }
 
+/* The shadcn token layer, retuned from the original blue/orange scheme to the
+   redesign's ivory + clay. components/ui/*, lib/link-styles.ts, the admin CRUD
+   screens and the legacy pages all resolve their colours from here, so remapping
+   these variables rethemes every one of them from a single place — a bg-primary
+   button now reads clay rather than #1d4ed8 blue. */
 :root {
-  --background: #f6f8ff;
-  --foreground: #0b1220;
+  --background: #f5f0e6;
+  --foreground: #17130d;
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #17130d;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #1d4ed8;
-  --primary-foreground: #f8fbff;
-  --secondary: #e7ecfb;
-  --secondary-foreground: #1e293b;
-  --muted: #ecf1fb;
-  --muted-foreground: #475569;
-  --accent: #f97316;
-  --accent-foreground: #081225;
+  --popover-foreground: #17130d;
+  --primary: #9b6a4c;
+  --primary-foreground: #f5f0e6;
+  --secondary: #f0e9da;
+  --secondary-foreground: #17130d;
+  --muted: #f0e9da;
+  --muted-foreground: #6b6252;
+  --accent: #9b6a4c;
+  --accent-foreground: #f5f0e6;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #d3ddf2;
-  --input: #c2cee7;
-  --ring: #2563eb;
-  --chart-1: #1d4ed8;
-  --chart-2: #3b82f6;
-  --chart-3: #22c55e;
-  --chart-4: #f97316;
-  --chart-5: #a855f7;
+  --border: #e0d7c4;
+  --input: #e0d7c4;
+  --ring: #9b6a4c;
+  --chart-1: #9b6a4c;
+  --chart-2: #b98c6b;
+  --chart-3: #4c5142;
+  --chart-4: #cba98c;
+  --chart-5: #82573c;
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);

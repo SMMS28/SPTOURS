@@ -132,11 +132,21 @@ export const getAdminStats = async (): Promise<AdminStats> => {
               .order("created_at", { ascending: false })
               .limit(8);
           }),
+        // booking_reference comes from migration 0006, absent on some
+        // environments — fall back so the panel still lists bookings.
         supabase
           .from("bookings")
           .select("id,booking_reference,status,travelers_count,total_amount,packages(title)")
           .order("created_at", { ascending: false })
-          .limit(6),
+          .limit(6)
+          .then(async (result) => {
+            if (!result.error) return result;
+            return supabase
+              .from("bookings")
+              .select("id,status,travelers_count,total_amount,packages(title)")
+              .order("created_at", { ascending: false })
+              .limit(6);
+          }),
       ]);
 
     // Bar chart: bucket the last 7 days in JS rather than needing an RPC.
@@ -195,8 +205,10 @@ export const getAdminStats = async (): Promise<AdminStats> => {
         };
       }),
       recentBookings: (recentBk.data ?? []).map((row) => ({
-        id: String(row.id),
-        reference: row.booking_reference ? String(row.booking_reference) : null,
+        id: String((row as Record<string, unknown>).id),
+        reference: (row as Record<string, unknown>).booking_reference
+          ? String((row as Record<string, unknown>).booking_reference)
+          : null,
         packageTitle: firstOf(row.packages)?.title ?? null,
         travellers: row.travelers_count ? Number(row.travelers_count) : null,
         amount: Number(row.total_amount ?? 0),

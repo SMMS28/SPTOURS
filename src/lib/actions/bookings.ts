@@ -8,7 +8,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { hasSupabaseEnv } from "@/lib/env";
 import { sendBookingNotifications } from "@/lib/notifications";
 import { createClient } from "@/lib/supabase/server";
-import { isMissingLocationColumn, parseLeadLocation } from "@/lib/location";
+import { isMissingColumn, isMissingLocationColumn, parseLeadLocation } from "@/lib/location";
 
 const bookingSchema = z.object({
   packageId: z.string().uuid(),
@@ -104,6 +104,24 @@ export const createBookingFromPlanner = async (formData: FormData) => {
       .select("id,booking_reference")
       .single();
     booking = retry.data;
+    bookingError = retry.error;
+  }
+
+  // booking_reference / referral_code arrive in migration 0006, which is not
+  // applied on every environment. Without this fallback the insert fails with
+  // 42703 and the visitor loses the booking entirely, so retry with just the
+  // columns that have existed since 0001 and synthesise the reference locally.
+  if (isMissingColumn(bookingError)) {
+    const core = {
+      user_id: baseBooking.user_id,
+      package_id: baseBooking.package_id,
+      travelers_count: baseBooking.travelers_count,
+      travel_date: baseBooking.travel_date,
+      total_amount: baseBooking.total_amount,
+      status: baseBooking.status,
+    };
+    const retry = await supabase.from("bookings").insert(core).select("id").single();
+    booking = retry.data ? { ...retry.data, booking_reference: bookingReference } : null;
     bookingError = retry.error;
   }
 

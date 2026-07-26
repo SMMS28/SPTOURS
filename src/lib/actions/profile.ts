@@ -39,14 +39,20 @@ export const updateProfile = async (formData: FormData) => {
   }
 
   const supabase = await createClient();
+  // upsert, not update: if the handle_new_user trigger never created a profile
+  // row (e.g. the user predates it, or it errored during signup) an update would
+  // match zero rows and silently succeed without saving anything.
   const { error } = await supabase
     .from("profiles")
-    .update({
-      full_name: parsed.data.full_name,
-      phone: parsed.data.phone || null,
-      city: parsed.data.city || null,
-    })
-    .eq("id", user.id);
+    .upsert(
+      {
+        id: user.id,
+        full_name: parsed.data.full_name,
+        phone: parsed.data.phone || null,
+        city: parsed.data.city || null,
+      },
+      { onConflict: "id" },
+    );
 
   if (error) {
     // phone/city arrive in migration 0007. Until that has been applied to the
@@ -56,8 +62,7 @@ export const updateProfile = async (formData: FormData) => {
     if (/column|schema cache/i.test(error.message)) {
       const { error: nameOnlyError } = await supabase
         .from("profiles")
-        .update({ full_name: parsed.data.full_name })
-        .eq("id", user.id);
+        .upsert({ id: user.id, full_name: parsed.data.full_name }, { onConflict: "id" });
 
       if (nameOnlyError) {
         redirect(detailsPath(nameOnlyError.message));

@@ -45,7 +45,7 @@ const STATUS_NOTICE: Record<string, { text: string; tone: "ok" | "warn" }> = {
 };
 
 const field =
-  "h-[52px] rounded-xl border-[1.5px] border-[#E0D7C4] bg-white px-4 text-[15px] text-ink transition-colors focus:border-clay focus:outline-none";
+  "h-[52px] w-full min-w-0 rounded-xl border-[1.5px] border-[#E0D7C4] bg-white px-4 text-[15px] text-ink transition-colors focus:border-clay focus:outline-none";
 const label = "text-[12.5px] font-semibold tracking-[0.02em] text-[#4c4839]";
 
 export type ContactPackageOption = { id: string; title: string; duration: string; bookable: boolean };
@@ -124,9 +124,9 @@ export function ContactExperience({
       </section>
 
       {/* body */}
-      <section className="mx-auto grid max-w-[1360px] items-start gap-14 px-6 pb-24 pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:px-10">
+      <section className="mx-auto grid max-w-[1360px] grid-cols-1 items-start gap-14 px-6 pb-24 pt-20 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:px-10">
         {/* form */}
-        <motion.div custom={0} variants={reveal} initial="hidden" animate="show">
+        <motion.div custom={0} variants={reveal} initial="hidden" animate="show" className="min-w-0">
           <p className="mb-3.5 font-mono text-xs uppercase tracking-[0.3em] text-clay">Enquiry form</p>
           <h2 className="mb-2.5 font-display text-[clamp(28px,3vw,42px)] font-bold tracking-[-0.02em]">
             Tell us a little, we&apos;ll do the rest
@@ -257,7 +257,7 @@ export function ContactExperience({
           variants={reveal}
           initial="hidden"
           animate="show"
-          className="flex flex-col gap-3.5"
+          className="flex min-w-0 flex-col gap-3.5"
         >
           <a
             href={WA_ENQUIRE}

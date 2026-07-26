@@ -57,16 +57,18 @@ export default async function ProfilePage({
 
   const role = user ? await getProfileRoleByUserId(user.id) : null;
 
+  // phone/city are optional: the fallback query above omits them when migration
+  // 0007 hasn't been applied.
   let profile: {
     full_name: string | null;
-    phone: string | null;
-    city: string | null;
+    phone?: string | null;
+    city?: string | null;
     created_at: string | null;
   } | null = null;
   let favorites: { id: string; packages: unknown }[] = [];
   let bookings: {
     id: string;
-    booking_reference: string | null;
+    booking_reference?: string | null;
     status: string;
     travel_date: string | null;
     travelers_count: number | null;
@@ -80,17 +82,30 @@ export default async function ProfilePage({
 
     const [{ data: profileData }, { data: favoriteData }, { data: bookingData }] =
       await Promise.all([
+        // phone/city arrive in migration 0007. Selecting a column that doesn't
+        // exist fails the whole row, which is why the account details rendered
+        // blank — fall back to the columns that have always existed.
         supabase
           .from("profiles")
           .select("full_name,phone,city,created_at")
           .eq("id", user.id)
-          .maybeSingle(),
+          .maybeSingle()
+          .then(async (result) => {
+            if (!result.error) return result;
+            return supabase
+              .from("profiles")
+              .select("full_name,created_at")
+              .eq("id", user.id)
+              .maybeSingle();
+          }),
         supabase
           .from("favorites")
           .select(`id,packages(${pkgCols})`)
           .eq("user_id", user.id)
           .order("created_at", { ascending: false })
           .limit(24),
+        // booking_reference comes from migration 0006 and is absent on some
+        // environments; without a fallback the whole trips list came back null.
         supabase
           .from("bookings")
           .select(
@@ -98,7 +113,18 @@ export default async function ProfilePage({
           )
           .eq("user_id", user.id)
           .order("created_at", { ascending: false })
-          .limit(30),
+          .limit(30)
+          .then(async (result) => {
+            if (!result.error) return result;
+            return supabase
+              .from("bookings")
+              .select(
+                `id,status,travel_date,travelers_count,total_amount,packages(${pkgCols})`,
+              )
+              .eq("user_id", user.id)
+              .order("created_at", { ascending: false })
+              .limit(30);
+          }),
       ]);
 
     profile = profileData ?? null;
@@ -148,7 +174,7 @@ export default async function ProfilePage({
               alt="SP Tours and Travels"
               width={640}
               height={286}
-              className="h-[46px] w-auto"
+              className="h-[54px] w-auto"
               priority
             />
           </Link>

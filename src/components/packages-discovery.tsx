@@ -67,7 +67,7 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
       </section>
 
       {/* filter bar — offset matches the header, taller on mobile (second nav row) */}
-      <div className="sticky top-[104px] z-40 border-b border-hairline bg-paper/90 backdrop-blur-md lg:top-[72px]">
+      <div className="sticky top-[116px] z-40 border-b border-hairline bg-paper/90 backdrop-blur-md lg:top-[80px]">
         <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between gap-5 px-6 py-4 lg:px-10">
           <div className="flex flex-wrap gap-2.5">
             {[{ key: "all", label: "All journeys" }, ...filters].map(({ key, label }) => (

@@ -83,7 +83,7 @@ export function ConfirmFormSubmits() {
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
       <button
         type="button"
-        className="absolute inset-0 bg-black/45 backdrop-blur-sm"
+        className="absolute inset-0 bg-inkdeep/55 backdrop-blur-sm"
         aria-label="Close confirmation dialog"
         onClick={handleCancel}
       />
@@ -91,22 +91,26 @@ export function ConfirmFormSubmits() {
         role="dialog"
         aria-modal="true"
         aria-label="Confirmation dialog"
-        className="relative w-full max-w-md rounded-2xl border border-white/50 bg-white/10 p-6 text-white shadow-2xl backdrop-blur-2xl animate-fade-up"
+        className="animate-fade-up relative w-full max-w-md rounded-[22px] border border-ink/10 bg-card p-7 shadow-[0_40px_80px_-40px_rgba(20,17,11,0.55)]"
       >
-        <h3 className="text-xl font-semibold text-white">Please confirm</h3>
-        <p className="mt-2 text-sm text-white/90">{message}</p>
-        <div className="mt-6 flex justify-end gap-3">
+        <p className="mb-2.5 font-mono text-[11px] uppercase tracking-[0.24em] text-clay">
+          Please confirm
+        </p>
+        <p className="font-display text-[22px] font-bold leading-snug tracking-[-0.01em] text-ink">
+          {message}
+        </p>
+        <div className="mt-7 flex justify-end gap-3">
           <button
             type="button"
             onClick={handleCancel}
-            className="rounded-md border border-white/55 bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/20"
+            className="inline-flex h-11 items-center rounded-full border-[1.5px] border-ink/15 px-5 text-[14px] font-semibold text-ink transition-colors hover:bg-[#f3ece0]"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={handleConfirm}
-            className="rounded-md bg-[#4285f4] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#3367d6]"
+            className="inline-flex h-11 items-center rounded-full bg-clay px-6 text-[14px] font-bold text-paper transition-colors hover:bg-clay-dark"
           >
             Confirm
           </button>
