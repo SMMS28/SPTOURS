@@ -9,7 +9,7 @@ import { signOut } from "@/lib/actions/auth";
 import { updateProfile } from "@/lib/actions/profile";
 import { wa, inr } from "@/lib/site";
 
-type Tab = "trips" | "saved" | "details";
+type Tab = "trips" | "past" | "saved" | "enquiries" | "details";
 
 type PackageRef = {
   slug: string;
@@ -35,6 +35,12 @@ const STATUS: Record<string, [string, string, string]> = {
   cancelled: ["Cancelled", "#6b6252", "rgba(107,98,82,0.14)"],
 };
 
+const ENQUIRY_STATUS: Record<string, [string, string, string]> = {
+  new: ["Received", "#9B6A4C", "rgba(155,106,76,0.12)"],
+  in_progress: ["In progress", "#4a5b74", "rgba(74,91,116,0.12)"],
+  closed: ["Closed", "#6b6252", "rgba(107,98,82,0.14)"],
+};
+
 const fieldCls =
   "h-[52px] rounded-xl border-[1.5px] border-[#E0D7C4] bg-[#fdfbf6] px-4 text-[15px] transition-colors focus:border-clay focus:outline-none";
 
@@ -46,8 +52,8 @@ export default async function ProfilePage({
   searchParams: Promise<{ tab?: string; message?: string }>;
 }) {
   const params = await searchParams;
-  const tab: Tab =
-    params.tab === "saved" || params.tab === "details" ? params.tab : "trips";
+  const TABS: Tab[] = ["trips", "past", "saved", "enquiries", "details"];
+  const tab: Tab = TABS.includes(params.tab as Tab) ? (params.tab as Tab) : "trips";
 
   const user = await getCurrentUser();
 
@@ -67,6 +73,13 @@ export default async function ProfilePage({
     created_at: string | null;
   } | null = null;
   let favorites: { id: string; packages: unknown }[] = [];
+  let enquiries: {
+    id: string;
+    message: string | null;
+    status: string;
+    created_at: string | null;
+    packages: unknown;
+  }[] = [];
   let bookings: {
     id: string;
     booking_reference?: string | null;
@@ -81,21 +94,32 @@ export default async function ProfilePage({
     const supabase = await createClient();
     const pkgCols = "slug,title,destination,cover_image,duration_days,price_inr";
 
-    const [{ data: profileData }, { data: favoriteData }, { data: bookingData }] =
+    const [{ data: profileData }, { data: favoriteData }, { data: bookingData }, { data: enquiryData }] =
       await Promise.all([
         // phone/city arrive in migration 0007. Selecting a column that doesn't
         // exist fails the whole row, which is why the account details rendered
         // blank — fall back to the columns that have always existed.
+        // Columns are added by migrations that may not all be applied: phone/city
+        // come from 0007 and avatar_url from 0011. Selecting a column that does
+        // not exist fails the WHOLE row, which is what rendered the account
+        // details blank — so degrade in steps, ending with the two columns that
+        // have existed since the table was created.
         supabase
           .from("profiles")
           .select("full_name,phone,city,avatar_url,created_at")
           .eq("id", user.id)
           .maybeSingle()
-          .then(async (result) => {
-            if (!result.error) return result;
+          .then(async (r1) => {
+            if (!r1.error) return r1;
+            const r2 = await supabase
+              .from("profiles")
+              .select("full_name,phone,city,created_at")
+              .eq("id", user.id)
+              .maybeSingle();
+            if (!r2.error) return r2;
             return supabase
               .from("profiles")
-              .select("full_name,avatar_url,created_at")
+              .select("full_name,created_at")
               .eq("id", user.id)
               .maybeSingle();
           }),
@@ -126,11 +150,30 @@ export default async function ProfilePage({
               .order("created_at", { ascending: false })
               .limit(30);
           }),
+        // Enquiries the visitor submitted. Matched on user_id when the row has
+        // one, else on their email — the contact form accepts anonymous
+        // submissions, so older enquiries may predate their account.
+        supabase
+          .from("inquiries")
+          .select(`id,message,status,created_at,packages(${pkgCols})`)
+          .or(`user_id.eq.${user.id},email.eq.${user.email ?? ""}`)
+          .order("created_at", { ascending: false })
+          .limit(30)
+          .then(async (r) => {
+            if (!r.error) return r;
+            return supabase
+              .from("inquiries")
+              .select(`id,message,status,created_at,packages(${pkgCols})`)
+              .eq("user_id", user.id)
+              .order("created_at", { ascending: false })
+              .limit(30);
+          }),
       ]);
 
     profile = profileData ?? null;
     favorites = favoriteData ?? [];
     bookings = bookingData ?? [];
+    enquiries = enquiryData ?? [];
   }
 
   const displayName = profile?.full_name?.trim() || user?.email?.split("@")[0] || "traveller";
@@ -151,17 +194,24 @@ export default async function ProfilePage({
   ).toUpperCase();
 
   const today = new Date().toISOString().slice(0, 10);
-  const upcoming = bookings.filter(
-    (b) => b.status !== "cancelled" && b.travel_date && b.travel_date >= today,
-  ).length;
+  // A trip is "past" once its travel date has gone, or it was cancelled.
+  const isPast = (b: { status: string; travel_date: string | null }) =>
+    b.status === "cancelled" || Boolean(b.travel_date && b.travel_date < today);
+  const upcomingBookings = bookings.filter((b) => !isPast(b));
+  const pastBookings = bookings.filter(isPast);
+  const upcoming = upcomingBookings.length;
+  const visibleBookings = tab === "past" ? pastBookings : upcomingBookings;
+  const openEnquiries = enquiries.filter((e) => e.status !== "closed").length;
   const memberSince = profile?.created_at
     ? new Date(profile.created_at).getFullYear()
     : null;
 
-  const tabs: [Tab, string][] = [
-    ["trips", "My trips"],
-    ["saved", "Saved"],
-    ["details", "Profile details"],
+  const tabs: [Tab, string, number | null][] = [
+    ["trips", "Upcoming trips", upcomingBookings.length || null],
+    ["past", "Past tours", pastBookings.length || null],
+    ["saved", "My favourites", favorites.length || null],
+    ["enquiries", "My enquiries", enquiries.length || null],
+    ["details", "Profile details", null],
   ];
 
   return (
@@ -223,8 +273,16 @@ export default async function ProfilePage({
             {upcoming === 1 ? "trip" : "trips"}
           </span>
           <span>
-            <b className="font-display text-lg text-ink">{favorites.length}</b>&nbsp; saved{" "}
-            {favorites.length === 1 ? "journey" : "journeys"}
+            <b className="font-display text-lg text-ink">{pastBookings.length}</b>&nbsp; past{" "}
+            {pastBookings.length === 1 ? "tour" : "tours"}
+          </span>
+          <span>
+            <b className="font-display text-lg text-ink">{favorites.length}</b>&nbsp;{" "}
+            {favorites.length === 1 ? "favourite" : "favourites"}
+          </span>
+          <span>
+            <b className="font-display text-lg text-ink">{openEnquiries}</b>&nbsp; open{" "}
+            {openEnquiries === 1 ? "enquiry" : "enquiries"}
           </span>
           {memberSince ? (
             <span>
@@ -238,12 +296,13 @@ export default async function ProfilePage({
       {/* tabs — links rather than local state, so the save action can redirect
           back to ?tab=details and land on the right panel */}
       <div className="mx-auto w-full max-w-[1200px] px-6 lg:px-10">
-        <div className="flex gap-1.5 border-b border-ink/10">
-          {tabs.map(([key, label]) => (
+        <div className="flex flex-wrap gap-1.5 border-b border-ink/10">
+          {tabs.map(([key, label, count]) => (
             <Link
               key={key}
               href={`/profile?tab=${key}`}
-              className="border-b-2 px-[18px] py-3.5 text-[15px] transition-colors"
+              aria-current={tab === key ? "page" : undefined}
+              className="flex items-center gap-2 border-b-2 px-[18px] py-3.5 text-[15px] transition-colors"
               style={{
                 color: tab === key ? "#17130D" : "#8a8578",
                 fontWeight: tab === key ? 700 : 600,
@@ -251,6 +310,11 @@ export default async function ProfilePage({
               }}
             >
               {label}
+              {count ? (
+                <span className="rounded-full bg-[#f0e9da] px-2 py-0.5 text-[11.5px] font-bold text-[#4c5142]">
+                  {count}
+                </span>
+              ) : null}
             </Link>
           ))}
         </div>
@@ -272,16 +336,20 @@ export default async function ProfilePage({
         ) : null}
 
         <div className="animate-fade-up">
-          {tab === "trips" &&
-            (bookings.length === 0 ? (
+          {(tab === "trips" || tab === "past") &&
+            (visibleBookings.length === 0 ? (
               <Empty
-                title="No trips yet"
-                body="Once you plan a journey from any package page, it shows up here with its status and paperwork."
+                title={tab === "past" ? "No past tours yet" : "No upcoming trips"}
+                body={
+                  tab === "past"
+                    ? "Trips you've completed will be kept here, so you can look back at where you've been."
+                    : "Request a trip from any package page and it appears here with its status and paperwork."
+                }
                 cta={["Browse journeys", "/packages"]}
               />
             ) : (
               <div className="flex flex-col gap-[18px]">
-                {bookings.map((booking) => {
+                {visibleBookings.map((booking) => {
                   const pkg = one(booking.packages);
                   const [label, color, bg] =
                     STATUS[booking.status] ?? ["Pending", "#b5892f", "rgba(181,137,47,0.14)"];
@@ -419,6 +487,80 @@ export default async function ProfilePage({
                         </div>
                       </div>
                     </Link>
+                  );
+                })}
+              </div>
+            ))}
+
+          {tab === "enquiries" &&
+            (enquiries.length === 0 ? (
+              <Empty
+                title="No enquiries yet"
+                body="Anything you send us from the contact form or a package page shows up here, so you can track what you've asked about."
+                cta={["Ask us a question", "/contact"]}
+              />
+            ) : (
+              <div className="flex flex-col gap-3.5">
+                {enquiries.map((enquiry) => {
+                  const pkg = one(enquiry.packages);
+                  const [label, color, bg] =
+                    ENQUIRY_STATUS[enquiry.status] ?? ["Received", "#9B6A4C", "rgba(155,106,76,0.12)"];
+
+                  return (
+                    <article
+                      key={enquiry.id}
+                      className="rounded-[20px] border border-ink/8 bg-white p-6"
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.1em] text-clay">
+                            {pkg?.title ?? "General enquiry"}
+                          </p>
+                          <p className="text-[13px] text-[#8a8578]">
+                            {enquiry.created_at
+                              ? new Date(enquiry.created_at).toLocaleDateString("en-IN", {
+                                  day: "numeric",
+                                  month: "long",
+                                  year: "numeric",
+                                })
+                              : "—"}
+                          </p>
+                        </div>
+                        <span
+                          className="whitespace-nowrap rounded-full px-3 py-[5px] text-[11.5px] font-bold"
+                          style={{ color, background: bg }}
+                        >
+                          {label}
+                        </span>
+                      </div>
+
+                      {enquiry.message ? (
+                        <p className="mt-4 whitespace-pre-line border-t border-ink/8 pt-4 text-[14px] leading-relaxed text-[#3f3b30]">
+                          {enquiry.message}
+                        </p>
+                      ) : null}
+
+                      <div className="mt-5 flex flex-wrap gap-2.5">
+                        <a
+                          href={wa(
+                            `Hi SP Tours, following up on my enquiry${pkg?.title ? ` about ${pkg.title}` : ""}.`,
+                          )}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex h-10 items-center rounded-full border-[1.5px] border-ink/15 px-4 text-[13px] font-semibold transition-colors hover:bg-[#f3ece0]"
+                        >
+                          Follow up on WhatsApp
+                        </a>
+                        {pkg?.slug ? (
+                          <Link
+                            href={`/packages/${pkg.slug}`}
+                            className="inline-flex h-10 items-center rounded-full bg-ink px-[18px] text-[13px] font-bold text-paper transition-colors hover:bg-clay"
+                          >
+                            View journey →
+                          </Link>
+                        ) : null}
+                      </div>
+                    </article>
                   );
                 })}
               </div>

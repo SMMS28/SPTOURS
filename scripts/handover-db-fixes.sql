@@ -62,7 +62,15 @@ create index if not exists inquiries_travel_date_idx on public.inquiries (travel
 -- 2. Migration 0011 — capture the provider's name/photo on sign-up
 --    Google sends the display name as `name` and the photo as `picture`;
 --    handle_new_user only read `full_name`, so Google sign-ups got a blank name.
+--
+--    NOTE: profiles.avatar_url does not exist on this project. 0001 declares it
+--    in its CREATE TABLE, but the table already existed when 0001 ran so
+--    `create table if not exists` did nothing. Adding it first — this is what
+--    caused "ERROR: 42703: column p.avatar_url does not exist".
 -- ---------------------------------------------------------------------------
+alter table public.profiles
+  add column if not exists avatar_url text;
+
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql

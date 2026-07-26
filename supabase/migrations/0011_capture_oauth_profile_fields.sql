@@ -10,6 +10,12 @@
 -- covers users who signed up by email and linked Google later — this trigger just
 -- gets the common case right at the source.
 
+-- 0001 declares avatar_url in its CREATE TABLE, but on this project the profiles
+-- table already existed when 0001 ran, so `create table if not exists` was a
+-- no-op and the column was never added. Add it before anything references it.
+alter table public.profiles
+  add column if not exists avatar_url text;
+
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql

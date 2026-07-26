@@ -56,18 +56,35 @@ export const syncProfileFromProvider = async (
   }
 
   try {
-    const { data: existing } = await supabase
+    // avatar_url only exists once migration 0011 has run; fall back so the name
+    // still gets written on projects where it hasn't.
+    let existing: { full_name?: string | null; avatar_url?: string | null } | null = null;
+    let hasAvatarColumn = true;
+
+    const withAvatar = await supabase
       .from("profiles")
       .select("full_name,avatar_url")
       .eq("id", user.id)
       .maybeSingle();
+
+    if (withAvatar.error) {
+      hasAvatarColumn = false;
+      const nameOnly = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .maybeSingle();
+      existing = nameOnly.data;
+    } else {
+      existing = withAvatar.data;
+    }
 
     const patch: Record<string, string> = { id: user.id };
 
     if (identity.fullName && !existing?.full_name?.trim()) {
       patch.full_name = identity.fullName;
     }
-    if (identity.avatarUrl && !existing?.avatar_url?.trim()) {
+    if (hasAvatarColumn && identity.avatarUrl && !existing?.avatar_url?.trim()) {
       patch.avatar_url = identity.avatarUrl;
     }
 
