@@ -67,15 +67,17 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
       </section>
 
       {/* filter bar — offset matches the header, taller on mobile (second nav row) */}
-      <div className="sticky top-[133px] z-40 border-b border-hairline bg-paper/90 backdrop-blur-md lg:top-[87px]">
-        <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between gap-5 px-6 py-4 lg:px-10">
-          <div className="flex flex-wrap gap-2.5">
+      <div className="sticky top-[133px] z-40 border-b border-hairline bg-paper lg:top-[87px] lg:bg-paper/90 lg:backdrop-blur-md">
+        <div className="mx-auto flex max-w-[1360px] items-center justify-between gap-4 px-6 py-3 lg:flex-wrap lg:gap-5 lg:py-4 lg:px-10">
+          {/* One scrollable row on phones. Wrapping chips made this sticky bar
+              ~330px tall on an 844px screen, which buried the cards beneath it. */}
+          <div className="-mx-1 flex flex-1 gap-2.5 overflow-x-auto px-1 [-ms-overflow-style:none] [scrollbar-width:none] lg:flex-wrap lg:overflow-visible [&::-webkit-scrollbar]:hidden">
             {[{ key: "all", label: "All journeys" }, ...filters].map(({ key, label }) => (
               <button
                 key={key}
                 type="button"
                 onClick={() => setFilter(key)}
-                className={`rounded-full border-[1.5px] px-[18px] py-2.5 text-[13.5px] font-semibold transition-colors duration-200 ${
+                className={`shrink-0 rounded-full border-[1.5px] px-[18px] py-2.5 text-[13.5px] font-semibold transition-colors duration-200 ${
                   filter === key
                     ? "border-ink bg-ink text-paper"
                     : "border-ink/20 bg-transparent text-ink hover:border-ink/40"
@@ -85,7 +87,7 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
               </button>
             ))}
           </div>
-          <p className="font-mono text-[12.5px] text-mutedfg">{shown.length} tours</p>
+          <p className="hidden shrink-0 font-mono text-[12.5px] text-mutedfg sm:block">{shown.length} tours</p>
         </div>
       </div>
 

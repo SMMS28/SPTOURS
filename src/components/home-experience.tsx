@@ -7,6 +7,13 @@ import { motion, AnimatePresence, useScroll, useTransform, type Variants } from 
 import { HERO_SLIDES, WA_ENQUIRE, PHONE_TEL, EMAIL } from "@/lib/site";
 import { bentoSpan, type PackageView } from "@/lib/packages-view";
 
+/** Literal class names so Tailwind's JIT generates them. */
+const BENTO_SPAN: Record<number, string> = {
+  3: "lg:col-span-3",
+  4: "lg:col-span-4",
+  5: "lg:col-span-5",
+};
+
 const reveal: Variants = {
   hidden: { opacity: 0, y: 28 },
   show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
@@ -115,35 +122,38 @@ export function HomeExperience({
 
         {/* featured */}
         <motion.div variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-8%" }} className="mb-6">
-          <Link href={`/packages/${featured.slug}`} className="group relative block h-[560px] overflow-hidden rounded-[26px]">
+          <Link href={`/packages/${featured.slug}`} className="group relative block h-[420px] overflow-hidden rounded-[20px] sm:h-[560px] sm:rounded-[26px]">
             <Image src={featured.image} alt={featured.title} fill sizes="1360px" className="object-cover transition-transform duration-[1000ms] group-hover:scale-105" />
             <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(20,17,11,0.88)_0%,rgba(20,17,11,0.52)_40%,rgba(20,17,11,0.08)_78%,rgba(20,17,11,0)_100%)]" />
             <span className="absolute left-6 top-6 rounded-full bg-paper px-4 py-2 font-mono text-[12px] sm:text-[11px] uppercase tracking-wider text-inkdeep">{[featured.tag, featured.duration].filter(Boolean).join(" · ")}</span>
-            <div className="absolute inset-x-[46px] bottom-11 max-w-[620px] text-paper">
+            <div className="absolute inset-x-5 bottom-7 max-w-[620px] text-paper sm:inset-x-[46px] sm:bottom-11">
               <p className="mb-4 font-mono text-xs uppercase tracking-[0.16em] text-clay-tint">{featured.region} · Guwahati start</p>
               <h3 className="mb-[18px] font-display text-[clamp(34px,3.6vw,50px)] font-bold leading-none tracking-[-0.02em]">{featured.title}</h3>
               <p className="mb-7 max-w-[480px] text-base leading-relaxed text-paper/85">{featured.blurb}</p>
-              <div className="flex items-center justify-between gap-6">
+              <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-6">
                 <div className="flex items-baseline gap-2">
                   {featured.hasPrice ? <span className="font-mono text-[13px] text-paper/60">from</span> : null}
-                  <span className="font-display text-[40px] font-bold">{featured.priceLabel}</span>
+                  <span className="font-display text-[30px] font-bold sm:text-[40px]">{featured.priceLabel}</span>
                   {featured.hasPrice ? <span className="text-sm text-paper/60">/ person</span> : null}
                 </div>
-                <span className="grid h-[60px] w-[60px] shrink-0 place-items-center rounded-full bg-clay text-[22px] shadow-[0_14px_34px_-14px_rgba(155,106,76,0.9)] transition-transform duration-300 group-hover:scale-110">→</span>
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-clay text-[20px] sm:h-[60px] sm:w-[60px] sm:text-[22px] shadow-[0_14px_34px_-14px_rgba(155,106,76,0.9)] transition-transform duration-300 group-hover:scale-110">→</span>
               </div>
             </div>
           </Link>
         </motion.div>
 
         {/* bento grid */}
-        <div className="grid grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-12">
           {rest.map((p, i) => (
             <motion.div
               key={p.slug}
               variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-6%" }}
-              style={{ gridColumn: `span ${bentoSpan(i)} / span ${bentoSpan(i)}` }}
+              // Tailwind class rather than an inline style: inline styles can't be
+              // media-queried, so the 12-column spans applied on phones too and
+              // squeezed each card to ~100px. Literal strings so JIT emits them.
+              className={BENTO_SPAN[bentoSpan(i)]}
             >
-              <Link href={`/packages/${p.slug}`} className="group relative block h-[440px] overflow-hidden rounded-[22px] transition-[transform,box-shadow] duration-500 hover:-translate-y-2 hover:shadow-[0_34px_62px_-42px_rgba(20,17,11,0.6)]">
+              <Link href={`/packages/${p.slug}`} className="group relative block h-[340px] overflow-hidden rounded-[18px] transition-[transform,box-shadow] duration-500 hover:-translate-y-2 hover:shadow-[0_34px_62px_-42px_rgba(20,17,11,0.6)] sm:h-[440px] sm:rounded-[22px]">
                 <Image src={p.image} alt={p.title} fill sizes="(max-width:900px) 100vw, 45vw" className="object-cover transition-transform duration-[900ms] group-hover:scale-[1.07]" />
                 <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,17,11,0.92)_6%,rgba(20,17,11,0.18)_56%,rgba(20,17,11,0.02)_100%)]" />
                 {p.tag ? <span className="absolute left-4 top-4 rounded-full bg-paper/95 px-3 py-1.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-wider text-inkdeep">{p.tag}</span> : null}

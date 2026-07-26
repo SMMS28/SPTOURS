@@ -74,7 +74,7 @@ export function SiteHeaderClient({
     <header
       className={`fixed inset-x-0 top-0 z-[100] border-b transition-[background,box-shadow,border-color] duration-500 ${
         opaque
-          ? "border-hairline bg-paper/90 shadow-[0_10px_30px_-22px_rgba(20,17,11,0.5)] backdrop-blur-md"
+          ? "border-hairline bg-paper shadow-[0_10px_30px_-22px_rgba(20,17,11,0.5)] lg:bg-paper/90 lg:backdrop-blur-md"
           : "border-transparent bg-transparent"
       }`}
     >
