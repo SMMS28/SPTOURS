@@ -311,7 +311,7 @@ export default async function ProfilePage({
             >
               {label}
               {count ? (
-                <span className="rounded-full bg-[#f0e9da] px-2 py-0.5 text-[11.5px] font-bold text-[#4c5142]">
+                <span className="rounded-full bg-[#f0e9da] px-2 py-0.5 text-[12px] sm:text-[11.5px] font-bold text-[#4c5142]">
                   {count}
                 </span>
               ) : null}
@@ -387,7 +387,7 @@ export default async function ProfilePage({
                       <div className="flex flex-col p-6">
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.1em] text-clay">
+                            <p className="mb-2 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-clay">
                               {[pkg?.destination, pkg?.duration_days ? `${pkg.duration_days}D` : null]
                                 .filter(Boolean)
                                 .join(" · ") || "Journey"}
@@ -398,7 +398,7 @@ export default async function ProfilePage({
                             <p className="text-[13.5px] text-mutedfg">{meta}</p>
                           </div>
                           <span
-                            className="whitespace-nowrap rounded-full px-3 py-[5px] text-[11.5px] font-bold"
+                            className="whitespace-nowrap rounded-full px-3 py-[5px] text-[12px] sm:text-[11.5px] font-bold"
                             style={{ color, background: bg }}
                           >
                             {label}
@@ -473,7 +473,7 @@ export default async function ProfilePage({
                         </span>
                       </div>
                       <div className="p-5">
-                        <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.1em] text-clay">
+                        <p className="mb-2 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-clay">
                           {[pkg.destination, pkg.duration_days ? `${pkg.duration_days}D` : null]
                             .filter(Boolean)
                             .join(" · ")}
@@ -513,7 +513,7 @@ export default async function ProfilePage({
                     >
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <p className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.1em] text-clay">
+                          <p className="mb-1.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-clay">
                             {pkg?.title ?? "General enquiry"}
                           </p>
                           <p className="text-[13px] text-[#8a8578]">
@@ -527,7 +527,7 @@ export default async function ProfilePage({
                           </p>
                         </div>
                         <span
-                          className="whitespace-nowrap rounded-full px-3 py-[5px] text-[11.5px] font-bold"
+                          className="whitespace-nowrap rounded-full px-3 py-[5px] text-[12px] sm:text-[11.5px] font-bold"
                           style={{ color, background: bg }}
                         >
                           {label}

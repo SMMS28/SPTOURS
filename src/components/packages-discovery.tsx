@@ -67,7 +67,7 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
       </section>
 
       {/* filter bar — offset matches the header, taller on mobile (second nav row) */}
-      <div className="sticky top-[116px] z-40 border-b border-hairline bg-paper/90 backdrop-blur-md lg:top-[80px]">
+      <div className="sticky top-[133px] z-40 border-b border-hairline bg-paper/90 backdrop-blur-md lg:top-[87px]">
         <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between gap-5 px-6 py-4 lg:px-10">
           <div className="flex flex-wrap gap-2.5">
             {[{ key: "all", label: "All journeys" }, ...filters].map(({ key, label }) => (
@@ -121,7 +121,7 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
                     className="object-cover transition-transform duration-[800ms] hover:scale-[1.06]"
                   />
                   {p.tag ? (
-                    <span className="absolute left-3.5 top-3.5 rounded-full bg-paper px-3 py-1.5 font-mono text-[10.5px] uppercase tracking-wider text-inkdeep">
+                    <span className="absolute left-3.5 top-3.5 rounded-full bg-paper px-3 py-1.5 font-mono text-[12px] sm:text-[10.5px] uppercase tracking-wider text-inkdeep">
                       {p.tag}
                     </span>
                   ) : null}
@@ -138,7 +138,7 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
                         type="submit"
                         aria-label={isSaved ? `Remove ${p.title} from saved` : `Save ${p.title}`}
                         aria-pressed={isSaved}
-                        className={`grid h-9 w-9 place-items-center rounded-full text-base transition-colors ${
+                        className={`grid h-11 w-11 place-items-center rounded-full text-lg transition-colors ${
                           isSaved
                             ? "bg-clay text-paper"
                             : "bg-paper/90 text-clay hover:bg-paper"
@@ -151,7 +151,7 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
                 </div>
 
                 <div className="flex flex-1 flex-col p-6">
-                  <p className="mb-2.5 font-mono text-[11px] uppercase tracking-[0.1em] text-clay">
+                  <p className="mb-2.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-clay">
                     {p.region} · {p.duration}
                   </p>
                   <h3 className="mb-2.5 font-display text-2xl font-bold leading-[1.08] tracking-[-0.01em]">
@@ -165,7 +165,7 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
                       {p.inclusions.slice(0, 6).map((inc) => (
                         <span
                           key={inc}
-                          className="rounded-full bg-[#f0e9da] px-2.5 py-1.5 text-[11px] text-[#4c5142]"
+                          className="rounded-full bg-[#f0e9da] px-2.5 py-1.5 text-[12px] sm:text-[11px] text-[#4c5142]"
                         >
                           {inc}
                         </span>
@@ -183,13 +183,13 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`Enquire about ${p.title} on WhatsApp`}
-                        className="grid h-10 w-10 place-items-center rounded-full border-[1.5px] border-ink/15 transition-colors hover:border-clay hover:bg-clay hover:text-paper"
+                        className="grid h-11 w-11 place-items-center rounded-full border-[1.5px] border-ink/15 transition-colors hover:border-clay hover:bg-clay hover:text-paper"
                       >
                         ✆
                       </a>
                       <Link
                         href={`/packages/${p.slug}`}
-                        className="inline-flex h-10 items-center rounded-full bg-ink px-[18px] text-[13px] font-bold text-paper transition-colors hover:bg-clay"
+                        className="inline-flex h-11 items-center rounded-full bg-ink px-[18px] text-[13px] font-bold text-paper transition-colors hover:bg-clay"
                       >
                         View →
                       </Link>

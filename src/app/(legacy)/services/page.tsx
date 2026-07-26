@@ -19,7 +19,7 @@ export default function ServicesPage() {
           <article key={item.title} className="flex h-full flex-col rounded-lg border bg-white p-5">
             <h2 className="text-lg font-semibold">{item.title}</h2>
             <p className="mt-2 text-sm text-mutedfg">{item.description}</p>
-            <Link href={item.href} className="mt-4 inline-flex w-fit rounded-md border px-3 py-2 text-sm font-medium">
+            <Link href={item.href} className="mt-4 inline-flex min-h-11 w-fit items-center rounded-md border px-3 py-2 text-sm font-medium">
               Explore
             </Link>
           </article>

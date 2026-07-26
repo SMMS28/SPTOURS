@@ -31,7 +31,7 @@ function Badge({ status }: { status: string }) {
   ];
   return (
     <span
-      className="rounded-full px-[11px] py-1 text-[11.5px] font-bold"
+      className="rounded-full px-[11px] py-1 text-[12px] sm:text-[11.5px] font-bold"
       style={{ color, background }}
     >
       {label}
@@ -92,7 +92,7 @@ export default async function AdminPage() {
               <span className="h-[7px] w-[7px] rounded-sm bg-current opacity-50" />
               {item.label}
               {item.badge ? (
-                <span className="ml-auto rounded-full bg-clay px-2 py-0.5 text-[11px] font-bold text-paper">
+                <span className="ml-auto rounded-full bg-clay px-2 py-0.5 text-[12px] sm:text-[11px] font-bold text-paper">
                   {item.badge}
                 </span>
               ) : null}
@@ -112,7 +112,7 @@ export default async function AdminPage() {
             </span>
             <div className="leading-tight">
               <p className="text-[13.5px] font-semibold text-paper">{user?.email ?? "Not signed in"}</p>
-              <p className="text-[11.5px] text-paper/50">{role === "admin" ? "Administrator" : "—"}</p>
+              <p className="text-[12px] sm:text-[11.5px] text-paper/50">{role === "admin" ? "Administrator" : "—"}</p>
             </div>
           </div>
         </div>
@@ -123,7 +123,7 @@ export default async function AdminPage() {
         <header className="sticky top-0 z-20 flex items-center justify-between gap-5 border-b border-hairline bg-[#EFEADF]/85 px-[34px] py-4 backdrop-blur-md">
           <div>
             <h1 className="font-display text-2xl font-bold tracking-[-0.01em]">Dashboard</h1>
-            <p className="mt-1 font-mono text-[11.5px] text-[#8a8578]">
+            <p className="mt-1 font-mono text-[12px] sm:text-[11.5px] text-[#8a8578]">
               {stats.publishedPackages} published · {stats.totalInquiries} inquiries ·{" "}
               {stats.totalBookings} bookings
             </p>
@@ -173,7 +173,7 @@ export default async function AdminPage() {
                 <div className="flex h-[200px] items-end gap-3">
                   {stats.inquiriesByDay.map((day) => (
                     <div key={day.label} className="flex flex-1 flex-col items-center gap-2">
-                      <span className="font-mono text-[11px] text-[#8a8578]">{day.count || ""}</span>
+                      <span className="font-mono text-[12px] sm:text-[11px] text-[#8a8578]">{day.count || ""}</span>
                       <div
                         className="w-full rounded-t-[6px]"
                         style={{
@@ -225,7 +225,7 @@ export default async function AdminPage() {
             {stats.recentInquiries.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-[13.5px]">
-                  <thead className="bg-[#f7f2e8] font-mono text-[11px] uppercase tracking-[0.1em] text-[#8a8578]">
+                  <thead className="bg-[#f7f2e8] font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-[#8a8578]">
                     <tr>
                       <th className={th}>Traveller</th>
                       <th className={th}>Contact</th>
@@ -292,7 +292,7 @@ export default async function AdminPage() {
             {stats.recentBookings.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-[13.5px]">
-                  <thead className="bg-[#f7f2e8] font-mono text-[11px] uppercase tracking-[0.1em] text-[#8a8578]">
+                  <thead className="bg-[#f7f2e8] font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-[#8a8578]">
                     <tr>
                       <th className={th}>Reference</th>
                       <th className={th}>Package</th>
@@ -344,7 +344,7 @@ function Stat({
       }`}
     >
       <p
-        className={`mb-3 font-mono text-[11px] uppercase tracking-[0.12em] ${
+        className={`mb-3 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.12em] ${
           dark ? "text-paper/60" : "text-[#8a8578]"
         }`}
       >

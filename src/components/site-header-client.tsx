@@ -8,8 +8,13 @@ import { Phone } from "lucide-react";
 import { signOut } from "@/lib/actions/auth";
 import { PHONE_TEL, WA_PLAN } from "@/lib/site";
 
-/** Header height on desktop — the /packages filter bar sticks directly below it. */
-export const HEADER_H = 80;
+/**
+ * Measured header heights. The /packages filter bar sticks directly below, so
+ * these and its `top-[…]` classes have to stay in step — the mobile row is taller
+ * because its nav items are 44px touch targets.
+ */
+export const HEADER_H = 87;
+export const HEADER_H_MOBILE = 133;
 
 const LINKS = [
   { href: "/packages", label: "Journeys" },
@@ -152,30 +157,34 @@ export function SiteHeaderClient({
       {/* Mobile nav — the redesign shipped desktop-only, which left phones with
           no navigation at all. Scrollable row, same links. */}
       <div className="px-4 pb-2.5 lg:hidden">
+        {/* min-h-11 on each item: these were 20px tall, well under the 44px
+            minimum for a touch target. */}
         <nav
-          className={`flex items-center gap-4 overflow-x-auto whitespace-nowrap text-[13px] font-semibold [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${linkColor}`}
+          className={`flex items-center gap-1 overflow-x-auto whitespace-nowrap text-[13.5px] font-semibold [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${linkColor}`}
         >
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               aria-current={isActive(l.href) ? "page" : undefined}
-              className={isActive(l.href) ? "text-clay" : ""}
+              className={`inline-flex min-h-11 items-center px-2.5 ${isActive(l.href) ? "text-clay" : ""}`}
             >
               {l.label}
             </Link>
           ))}
           {isAuthenticated ? (
-            <a href={`tel:${PHONE_TEL}`} className="inline-flex items-center gap-1.5">
+            <a href={`tel:${PHONE_TEL}`} className="inline-flex min-h-11 items-center gap-1.5 px-2.5">
               <Phone className="h-3.5 w-3.5" />
               SS Rao
             </a>
           ) : null}
           {!isAuthenticated ? (
-            <Link href="/login">Sign in</Link>
+            <Link href="/login" className="inline-flex min-h-11 items-center px-2.5">
+              Sign in
+            </Link>
           ) : (
             <form action={signOut} data-confirm-message="Confirm logout?">
-              <button type="submit" className="font-semibold">
+              <button type="submit" className="inline-flex min-h-11 items-center px-2.5 font-semibold">
                 Logout
               </button>
             </form>

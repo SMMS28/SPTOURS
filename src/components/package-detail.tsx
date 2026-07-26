@@ -37,7 +37,7 @@ const SAVED_NOTICE: Record<string, string> = {
 
 const field =
   "h-[46px] w-full rounded-xl border-[1.5px] border-[#E0D7C4] bg-white px-3.5 text-[14px] text-ink transition-colors focus:border-clay focus:outline-none";
-const lbl = "text-[11.5px] font-semibold text-[#4c4839]";
+const lbl = "text-[12px] sm:text-[11.5px] font-semibold text-[#4c4839]";
 
 type Props = {
   pkg: PackageView;
@@ -87,11 +87,11 @@ export function PackageDetail({
             </p>
             <div className="mb-4 flex flex-wrap items-center gap-3">
               {pkg.tag ? (
-                <span className="rounded-full bg-paper px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-inkdeep">
+                <span className="rounded-full bg-paper px-3.5 py-1.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-wider text-inkdeep">
                   {pkg.tag}
                 </span>
               ) : null}
-              <span className="rounded-full border border-paper/30 bg-paper/15 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-paper">
+              <span className="rounded-full border border-paper/30 bg-paper/15 px-3.5 py-1.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-wider text-paper">
                 {pkg.region}
               </span>
               {pkg.bookable ? (
@@ -102,7 +102,7 @@ export function PackageDetail({
                   <button
                     type="submit"
                     aria-pressed={isSaved}
-                    className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors ${
+                    className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-wider transition-colors ${
                       isSaved
                         ? "border-clay bg-clay text-paper"
                         : "border-paper/30 bg-paper/15 text-paper hover:bg-paper/25"
@@ -335,7 +335,7 @@ export function PackageDetail({
                 >
                   Request this trip
                 </button>
-                <p className="text-center text-[11.5px] text-[#8a8578]">
+                <p className="text-center text-[12px] sm:text-[11.5px] text-[#8a8578]">
                   No payment now — we confirm availability first.
                 </p>
               </form>
@@ -405,7 +405,7 @@ export function PackageDetail({
                     className="object-cover transition-transform duration-[800ms] group-hover:scale-[1.06]"
                   />
                 </div>
-                <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.1em] text-clay">
+                <p className="mb-2 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-clay">
                   {p.region} · {p.duration}
                 </p>
                 <h3 className="mb-2 font-display text-[22px] font-bold">{p.title}</h3>

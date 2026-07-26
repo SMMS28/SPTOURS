@@ -85,7 +85,7 @@ export function HomeExperience({
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.6 }}
                   >
-                    <p className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.24em] text-paper/60">Now showing</p>
+                    <p className="mb-1.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.24em] text-paper/60">Now showing</p>
                     <p className="font-display text-[22px] font-semibold text-paper">{HERO_SLIDES[slide].caption}</p>
                   </motion.div>
                 </AnimatePresence>
@@ -118,7 +118,7 @@ export function HomeExperience({
           <Link href={`/packages/${featured.slug}`} className="group relative block h-[560px] overflow-hidden rounded-[26px]">
             <Image src={featured.image} alt={featured.title} fill sizes="1360px" className="object-cover transition-transform duration-[1000ms] group-hover:scale-105" />
             <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(20,17,11,0.88)_0%,rgba(20,17,11,0.52)_40%,rgba(20,17,11,0.08)_78%,rgba(20,17,11,0)_100%)]" />
-            <span className="absolute left-6 top-6 rounded-full bg-paper px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-inkdeep">{[featured.tag, featured.duration].filter(Boolean).join(" · ")}</span>
+            <span className="absolute left-6 top-6 rounded-full bg-paper px-4 py-2 font-mono text-[12px] sm:text-[11px] uppercase tracking-wider text-inkdeep">{[featured.tag, featured.duration].filter(Boolean).join(" · ")}</span>
             <div className="absolute inset-x-[46px] bottom-11 max-w-[620px] text-paper">
               <p className="mb-4 font-mono text-xs uppercase tracking-[0.16em] text-clay-tint">{featured.region} · Guwahati start</p>
               <h3 className="mb-[18px] font-display text-[clamp(34px,3.6vw,50px)] font-bold leading-none tracking-[-0.02em]">{featured.title}</h3>
@@ -146,10 +146,10 @@ export function HomeExperience({
               <Link href={`/packages/${p.slug}`} className="group relative block h-[440px] overflow-hidden rounded-[22px] transition-[transform,box-shadow] duration-500 hover:-translate-y-2 hover:shadow-[0_34px_62px_-42px_rgba(20,17,11,0.6)]">
                 <Image src={p.image} alt={p.title} fill sizes="(max-width:900px) 100vw, 45vw" className="object-cover transition-transform duration-[900ms] group-hover:scale-[1.07]" />
                 <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,17,11,0.92)_6%,rgba(20,17,11,0.18)_56%,rgba(20,17,11,0.02)_100%)]" />
-                {p.tag ? <span className="absolute left-4 top-4 rounded-full bg-paper/95 px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-inkdeep">{p.tag}</span> : null}
+                {p.tag ? <span className="absolute left-4 top-4 rounded-full bg-paper/95 px-3 py-1.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-wider text-inkdeep">{p.tag}</span> : null}
                 <span className="absolute right-[18px] top-[18px] font-mono text-xs text-paper/85">{String(i + 1).padStart(2, "0")}</span>
                 <div className="absolute inset-x-6 bottom-6 text-paper">
-                  <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.12em] text-clay-tint">{p.region} · {p.duration}</p>
+                  <p className="mb-2 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.12em] text-clay-tint">{p.region} · {p.duration}</p>
                   <h4 className="mb-3.5 font-display text-[25px] font-bold leading-[1.06] tracking-[-0.01em]">{p.title}</h4>
                   <div className="flex items-center justify-between">
                     <span className="font-display text-[22px] font-bold">{p.priceLabel}</span>
@@ -187,7 +187,7 @@ export function HomeExperience({
             {[["Permits & paperwork", "Handled for you"], ["Hand-picked stays", "On every route"], ["Local drivers", "Who know the hills"]].map(([a, b]) => (
               <div key={a} className="text-center">
                 <p className="font-display text-[15px] font-bold text-paper">{a}</p>
-                <p className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.12em] text-paper/55">{b}</p>
+                <p className="mt-1.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.12em] text-paper/55">{b}</p>
               </div>
             ))}
           </motion.div>
@@ -206,7 +206,7 @@ export function HomeExperience({
             </div>
             <div className="flex min-w-[330px] flex-col gap-3.5">
               <a href={WA_ENQUIRE} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-5 rounded-[14px] bg-clay px-[22px] py-[18px] transition-[background,transform] duration-300 hover:-translate-y-0.5 hover:bg-clay-dark">
-                <span><span className="block font-mono text-[11px] uppercase tracking-[0.12em] text-paper/80">Fastest reply</span><span className="font-display text-xl font-bold">Enquire on WhatsApp</span></span>
+                <span><span className="block font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.12em] text-paper/80">Fastest reply</span><span className="font-display text-xl font-bold">Enquire on WhatsApp</span></span>
                 <span className="text-xl">→</span>
               </a>
               <a
@@ -214,7 +214,7 @@ export function HomeExperience({
                 className="flex items-center justify-between gap-5 rounded-[14px] border border-paper/25 bg-paper/10 px-[22px] py-[18px] transition-colors hover:bg-paper/20"
               >
                 <span>
-                  <span className="block font-mono text-[11px] uppercase tracking-[0.12em] text-paper/70">
+                  <span className="block font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.12em] text-paper/70">
                     {signedIn ? "Tap to dial" : "Members only"}
                   </span>
                   <span className="font-display text-xl font-bold">
@@ -224,7 +224,7 @@ export function HomeExperience({
                 <span className="text-xl">→</span>
               </a>
               <a href={`mailto:${EMAIL}`} className="flex items-center justify-between gap-5 rounded-[14px] bg-paper px-[22px] py-[18px] text-ink transition-transform hover:-translate-y-0.5">
-                <span><span className="block font-mono text-[11px] uppercase tracking-[0.12em] text-ink/55">Email us</span><span className="font-display text-lg font-bold">{EMAIL}</span></span>
+                <span><span className="block font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.12em] text-ink/55">Email us</span><span className="font-display text-lg font-bold">{EMAIL}</span></span>
                 <span className="text-xl">→</span>
               </a>
             </div>

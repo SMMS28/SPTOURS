@@ -107,8 +107,8 @@ export default function NortheastPage() {
   return (
     <div>
       {/* hero — editorial split on ivory */}
-      <section className="relative flex min-h-screen items-center overflow-hidden bg-paper px-6 pb-[70px] pt-32 lg:px-10">
-        <div className="pointer-events-none absolute -right-[6%] -top-[12%] h-[560px] w-[560px] rounded-full bg-[radial-gradient(circle,rgba(155,106,76,0.10),transparent_70%)]" />
+      <section className="relative flex min-h-screen items-center overflow-hidden bg-paper px-6 pb-14 pt-36 sm:pb-[70px] sm:pt-32 lg:px-10">
+        <div className="pointer-events-none absolute -right-[6%] -top-[12%] h-[300px] w-[300px] rounded-full bg-[radial-gradient(circle,rgba(155,106,76,0.10),transparent_70%)] sm:h-[560px] sm:w-[560px]" />
         <div className="mx-auto grid w-full max-w-[1360px] items-center gap-[60px] lg:grid-cols-[1.02fr_1fr]">
           <div>
             <p className="mb-6 font-mono text-[13px] uppercase tracking-[0.3em] text-clay">North East India · Since 1986</p>
@@ -120,28 +120,28 @@ export default function NortheastPage() {
               <Link href="/packages" className="inline-flex h-14 items-center rounded-full bg-clay px-[30px] text-[15.5px] font-bold text-paper shadow-[0_18px_44px_-18px_rgba(155,106,76,0.9)] transition-[background,transform] duration-300 hover:-translate-y-0.5 hover:bg-clay-dark">Browse packages →</Link>
               <a href={WA_PLAN} target="_blank" rel="noopener noreferrer" className="inline-flex h-14 items-center rounded-full border-[1.5px] border-ink/20 px-7 text-[15.5px] font-semibold text-ink transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-paper">Plan on WhatsApp</a>
             </div>
-            <div className="mt-11 flex flex-wrap gap-[34px] border-t border-ink/12 pt-7">
+            <div className="mt-9 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-ink/12 pt-6 sm:mt-11 sm:flex sm:flex-wrap sm:gap-[34px] sm:pt-7">
               {[[8, "States", ""], [7, "Routes", ""], [19999, "From / person", "₹"], [null, "Since", ""]].map(([num, sub, pre]) => (
                 <div key={sub as string}>
                   <p className="font-display text-[34px] font-bold text-ink">{num === null ? "1986" : <CountUp to={num as number} prefix={pre as string} />}</p>
-                  <p className="mt-1.5 font-mono text-[10.5px] uppercase tracking-[0.12em] text-[#8a8578]">{sub as string}</p>
+                  <p className="mt-1.5 font-mono text-[12px] sm:text-[10.5px] uppercase tracking-[0.12em] text-[#8a8578]">{sub as string}</p>
                 </div>
               ))}
             </div>
           </div>
-          <div className="relative h-[600px]">
-            <div className="absolute right-0 top-0 h-full w-[78%] overflow-hidden rounded-[28px] shadow-[0_50px_90px_-50px_rgba(20,17,11,0.6)]">
+          <div className="relative h-[380px] sm:h-[600px]">
+            <div className="absolute right-0 top-0 h-full w-[86%] overflow-hidden rounded-[22px] shadow-[0_50px_90px_-50px_rgba(20,17,11,0.6)] sm:w-[78%] sm:rounded-[28px]">
               <Image src="/images/hero-bg/pexels-parijb-3678501.jpg" alt="Meghalaya" fill sizes="600px" className="animate-kb object-cover" priority />
               <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,17,11,0.6)_0%,rgba(20,17,11,0)_45%)]" />
               {/* Right-aligned: the smaller framed image sits bottom-left and was
                   covering this caption on desktop. */}
-              <div className="absolute bottom-[22px] right-[22px] text-right text-paper"><p className="mb-1 font-mono text-[10.5px] uppercase tracking-[0.16em] text-[#E3B98A]">Meghalaya</p><p className="font-display text-[17px] font-semibold">Living root bridges</p></div>
+              <div className="absolute bottom-[22px] right-[22px] text-right text-paper"><p className="mb-1 font-mono text-[12px] sm:text-[10.5px] uppercase tracking-[0.16em] text-[#E3B98A]">Meghalaya</p><p className="font-display text-[17px] font-semibold">Living root bridges</p></div>
             </div>
-            <div className="absolute bottom-10 left-0 h-[300px] w-[46%] overflow-hidden rounded-[22px] border-[5px] border-paper shadow-[0_34px_60px_-34px_rgba(20,17,11,0.55)]">
+            <div className="absolute bottom-6 left-0 h-[170px] w-[42%] overflow-hidden rounded-[16px] border-[4px] border-paper shadow-[0_34px_60px_-34px_rgba(20,17,11,0.55)] sm:bottom-10 sm:h-[300px] sm:w-[46%] sm:rounded-[22px] sm:border-[5px]">
               <Image src="/images/hero-bg/pexels-pallabi-dewri-791137-5496933.jpg" alt="Arunachal" fill sizes="300px" className="object-cover" />
             </div>
-            <div className="absolute left-2 top-[26px] flex h-[116px] w-[116px] flex-col items-center justify-center rounded-full bg-inkdeep text-center text-paper shadow-[0_20px_40px_-18px_rgba(20,17,11,0.6)]">
-              <span className="font-display text-[34px] font-bold leading-none text-[#E3B98A]">8</span>
+            <div className="absolute left-0 top-3 flex h-[76px] w-[76px] flex-col items-center justify-center rounded-full bg-inkdeep text-center text-paper shadow-[0_20px_40px_-18px_rgba(20,17,11,0.6)] sm:left-2 sm:top-[26px] sm:h-[116px] sm:w-[116px]">
+              <span className="font-display text-[24px] font-bold leading-none text-[#E3B98A] sm:text-[34px]">8</span>
               <span className="mt-1 font-mono text-[8.5px] uppercase leading-tight tracking-[0.18em] text-paper/75">Seven<br />Sisters</span>
             </div>
           </div>
@@ -183,7 +183,7 @@ export default function NortheastPage() {
                   onMouseEnter={() => setActive(i)}
                   onFocus={() => setActive(i)}
                   onClick={() => setActive(i)}
-                  className={`flex items-center justify-between gap-4 border-t border-ink/12 py-5 text-left transition-[padding] duration-300 ${i === STATES.length - 1 ? "border-b" : ""} ${on ? "pl-3.5" : "pl-1"}`}
+                  className={`flex items-center justify-between gap-4 border-t border-ink/12 py-5 text-left transition-[padding] duration-300 ${i === STATES.length - 1 ? "border-b" : ""} ${on ? "pl-3.5" : "pl-1"} min-h-[60px]`}
                 >
                   <span className="flex items-baseline gap-4">
                     <span className="w-[26px] font-mono text-xs text-clay">{String(i + 1).padStart(2, "0")}</span>
@@ -194,14 +194,14 @@ export default function NortheastPage() {
               );
             })}
           </div>
-          <div className="relative min-h-[540px] overflow-hidden rounded-[26px] shadow-[0_44px_90px_-52px_rgba(20,17,11,0.65)]">
+          <div className="relative min-h-[340px] overflow-hidden rounded-[20px] shadow-[0_44px_90px_-52px_rgba(20,17,11,0.65)] sm:min-h-[540px] sm:rounded-[26px]">
             {STATES.map((s, i) => (
               <div key={s.name} className="absolute inset-0 transition-opacity duration-[800ms]" style={{ opacity: i === active ? 1 : 0 }}>
                 <Image src={s.image} alt={s.name} fill sizes="700px" className="object-cover" />
               </div>
             ))}
             <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,17,11,0.9)_6%,rgba(20,17,11,0.15)_55%,rgba(20,17,11,0)_100%)]" />
-            <div className="absolute inset-x-[34px] bottom-[34px] text-paper">
+            <div className="absolute inset-x-5 bottom-5 text-paper sm:inset-x-[34px] sm:bottom-[34px]">
               <p className="mb-2.5 font-mono text-xs uppercase tracking-[0.16em] text-[#E3B98A]">{STATES[active].tagline}</p>
               <h3 className="mb-3.5 font-display text-[clamp(30px,3vw,44px)] font-bold tracking-[-0.02em]">{STATES[active].name}</h3>
               <p className="mb-[22px] max-w-[440px] text-[15px] leading-relaxed text-paper/85">{STATES[active].desc}</p>
@@ -218,12 +218,12 @@ export default function NortheastPage() {
             <motion.div key={s.name} custom={i % 2} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-6%" }} className="rounded-[20px] border border-ink/[0.09] bg-white p-[26px]">
               <div className="mb-3.5 flex items-start justify-between gap-3.5">
                 <div><h3 className="mb-1 font-display text-[21px] font-bold">{s.name}</h3><p className="text-[12.5px] font-semibold text-clay">{s.state}</p></div>
-                <span className="whitespace-nowrap rounded-full border border-ink/[0.08] bg-[#F0E9DA] px-3 py-[5px] font-mono text-[11px] text-[#4c5142]">{s.best}</span>
+                <span className="whitespace-nowrap rounded-full border border-ink/[0.08] bg-[#F0E9DA] px-3 py-[5px] font-mono text-[12px] sm:text-[11px] text-[#4c5142]">{s.best}</span>
               </div>
               <p className="mb-4 text-sm leading-relaxed text-[#5b5749]">{s.desc}</p>
               <div className="flex gap-6 border-t border-ink/[0.08] pt-3.5">
-                <div><p className="mb-1 font-mono text-[10px] uppercase tracking-[0.08em] text-[#a49d8c]">Permit</p><p className="text-[13px] font-semibold">{s.permit}</p></div>
-                <div><p className="mb-1 font-mono text-[10px] uppercase tracking-[0.08em] text-[#a49d8c]">Do</p><p className="text-[13px] font-semibold">{s.act}</p></div>
+                <div><p className="mb-1 font-mono text-[12px] uppercase tracking-[0.08em] sm:text-[10px] text-[#a49d8c]">Permit</p><p className="text-[13px] font-semibold">{s.permit}</p></div>
+                <div><p className="mb-1 font-mono text-[12px] uppercase tracking-[0.08em] sm:text-[10px] text-[#a49d8c]">Do</p><p className="text-[13px] font-semibold">{s.act}</p></div>
               </div>
             </motion.div>
           ))}
@@ -237,7 +237,7 @@ export default function NortheastPage() {
             <motion.div key={s.period} custom={i} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-6%" }} className="rounded-[20px] border border-ink/[0.09] bg-white p-[30px]">
               <div className="mb-1.5 flex items-center justify-between">
                 <span className="font-display text-[26px] font-bold">{s.period}</span>
-                <span className={`rounded-full px-3 py-[5px] text-[11px] font-bold ${s.peak ? "bg-clay text-paper" : "bg-[#F0E9DA] text-[#4c5142]"}`}>{s.badge}</span>
+                <span className={`rounded-full px-3 py-[5px] text-[12px] sm:text-[11px] font-bold ${s.peak ? "bg-clay text-paper" : "bg-[#F0E9DA] text-[#4c5142]"}`}>{s.badge}</span>
               </div>
               <p className="mb-4 font-mono text-xs text-[#8a8578]">Avg {s.temp}</p>
               <h3 className="mb-3.5 font-display text-base font-bold">{s.head}</h3>
@@ -305,7 +305,7 @@ export default function NortheastPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {CUISINE.map(([state, dish, desc], i) => (
             <motion.div key={dish} custom={i % 4} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-4%" }} className="rounded-[16px] border border-ink/[0.09] bg-white p-5">
-              <p className="mb-2 font-mono text-[10.5px] uppercase tracking-[0.1em] text-clay">{state}</p>
+              <p className="mb-2 font-mono text-[12px] sm:text-[10.5px] uppercase tracking-[0.1em] text-clay">{state}</p>
               <h3 className="mb-1.5 font-display text-[17px] font-bold">{dish}</h3>
               <p className="text-[13px] leading-[1.5] text-mutedfg">{desc}</p>
             </motion.div>
@@ -315,7 +315,7 @@ export default function NortheastPage() {
 
       {/* cta */}
       <section className="mx-auto max-w-[1360px] px-6 pb-[110px] pt-20 lg:px-10">
-        <motion.div variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-8%" }} className="relative h-[460px] overflow-hidden rounded-[28px]">
+        <motion.div variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-8%" }} className="relative h-[420px] overflow-hidden rounded-[20px] sm:h-[460px] sm:rounded-[28px]">
           <Image src="/images/hero-bg/pexels-vijit-bagh-3435480-5414576.jpg" alt="Northeast India" fill sizes="1360px" className="object-cover object-[center_40%]" />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,17,11,0.5),rgba(20,17,11,0.8))]" />
           <div className="absolute inset-0 flex flex-col items-center justify-center px-10 text-center text-paper">

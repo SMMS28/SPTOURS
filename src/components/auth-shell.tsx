@@ -97,7 +97,7 @@ export function AuthShell({
                     <label className={lbl} htmlFor="password">
                       Password
                     </label>
-                    <Link href="/forgot-password" className="text-[12.5px] font-semibold text-clay">
+                    <Link href="/forgot-password" className="-my-2 inline-flex min-h-11 items-center text-[12.5px] font-semibold text-clay">
                       Forgot?
                     </Link>
                   </div>
@@ -186,7 +186,7 @@ export function AuthShell({
             <div>
               <div className="my-[26px] flex items-center gap-3.5">
                 <span className="h-px flex-1 bg-ink/15" />
-                <span className="font-mono text-[11px] uppercase tracking-widest text-[#a49d8c]">or</span>
+                <span className="font-mono text-[12px] sm:text-[11px] uppercase tracking-widest text-[#a49d8c]">or</span>
                 <span className="h-px flex-1 bg-ink/15" />
               </div>
 

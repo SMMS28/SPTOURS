@@ -265,7 +265,7 @@ export function ContactExperience({
             rel="noopener noreferrer"
             className="block rounded-[18px] bg-clay p-[26px] text-paper transition-[background,transform] duration-300 hover:-translate-y-1 hover:bg-clay-dark"
           >
-            <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.14em] text-paper/80">Fastest reply</p>
+            <p className="mb-2 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.14em] text-paper/80">Fastest reply</p>
             <p className="mb-1 font-display text-2xl font-bold">Chat on WhatsApp</p>
             <p className="text-[13.5px] text-paper/85">Replies in minutes →</p>
           </a>
@@ -274,19 +274,19 @@ export function ContactExperience({
               href={signedIn ? `tel:${PHONE_TEL}` : "/login?next=%2Fcontact"}
               className="block rounded-[18px] border border-ink/10 bg-white p-[22px] transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-30px_rgba(20,17,11,0.4)]"
             >
-              <p className="mb-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-clay">Phone</p>
+              <p className="mb-2.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.14em] text-clay">Phone</p>
               <p className="font-display text-[17px] font-bold leading-tight">{signedIn ? "Call SS Rao" : "Sign in to call"}</p>
             </a>
             <a
               href={`mailto:${EMAIL}`}
               className="block rounded-[18px] border border-ink/10 bg-white p-[22px] transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-30px_rgba(20,17,11,0.4)]"
             >
-              <p className="mb-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-clay">Email</p>
+              <p className="mb-2.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.14em] text-clay">Email</p>
               <p className="break-words font-display text-[14.5px] font-bold leading-tight">{EMAIL}</p>
             </a>
           </div>
           <div className="rounded-[18px] border border-ink/10 bg-white p-6">
-            <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.14em] text-clay">Our office</p>
+            <p className="mb-3 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.14em] text-clay">Our office</p>
             <p className="mb-3.5 text-[14.5px] leading-relaxed text-[#3f3b30]">
               T1, S. R. Residency, Sri Lakshmi Nagar,
               <br />

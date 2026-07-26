@@ -36,15 +36,15 @@ export async function SiteFooter() {
           ]} />
 
           <div>
-            <p className="mb-[18px] font-mono text-[11px] uppercase tracking-[0.16em] text-paper/50">Get in touch</p>
-            <div className="flex flex-col gap-3 text-[14.5px]">
-              <a href={WA_ENQUIRE} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-paper">WhatsApp us</a>
+            <p className="mb-2 font-mono text-[12px] uppercase tracking-[0.16em] text-paper/50 sm:mb-[18px] sm:text-[11px]">Get in touch</p>
+            <div className="flex flex-col text-[14.5px]">
+              <a href={WA_ENQUIRE} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center transition-colors hover:text-paper">WhatsApp us</a>
               {signedIn ? (
-                <a href={`tel:${PHONE_TEL}`} className="transition-colors hover:text-paper">Call SS Rao</a>
+                <a href={`tel:${PHONE_TEL}`} className="inline-flex min-h-11 items-center transition-colors hover:text-paper">Call SS Rao</a>
               ) : (
-                <Link href="/login?next=%2Fcontact" className="transition-colors hover:text-paper">Sign in to call</Link>
+                <Link href="/login?next=%2Fcontact" className="inline-flex min-h-11 items-center transition-colors hover:text-paper">Sign in to call</Link>
               )}
-              <a href={`mailto:${EMAIL}`} className="transition-colors hover:text-paper">{EMAIL}</a>
+              <a href={`mailto:${EMAIL}`} className="inline-flex min-h-11 items-center transition-colors hover:text-paper">{EMAIL}</a>
             </div>
           </div>
         </div>
@@ -61,10 +61,10 @@ export async function SiteFooter() {
 function FooterCol({ title, links }: { title: string; links: [string, string][] }) {
   return (
     <div>
-      <p className="mb-[18px] font-mono text-[11px] uppercase tracking-[0.16em] text-paper/50">{title}</p>
-      <div className="flex flex-col gap-3 text-[14.5px]">
+      <p className="mb-2 font-mono text-[12px] uppercase tracking-[0.16em] text-paper/50 sm:mb-[18px] sm:text-[11px]">{title}</p>
+      <div className="flex flex-col text-[14.5px]">
         {links.map(([label, href], i) => (
-          <Link key={`${label}-${i}`} href={href} className="transition-colors hover:text-paper">{label}</Link>
+          <Link key={`${label}-${i}`} href={href} className="inline-flex min-h-11 items-center transition-colors hover:text-paper">{label}</Link>
         ))}
       </div>
     </div>
