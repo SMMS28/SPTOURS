@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import { WA_PLAN, wa } from "@/lib/site";
 import { NeLiveStatus } from "@/components/ne-live-status";
+import { NeArrivalMap, type ArrivalMode } from "@/components/ne-arrival-map";
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -37,16 +38,30 @@ const SEASONS = [
   { period: "Jun – Sep", badge: "Monsoon", peak: false, temp: "22°C – 35°C", head: "Dramatic waterfalls & green valleys", pts: ["Nohkalikai & Nuranang at their peak", "Dzükou Valley carpeted in lilies", "Lowest prices, fewest tourists", "Cherrapunji at its most vivid"] },
 ];
 
-const ACTIVITIES = [
-  ["White-water rafting", "The Teesta and Brahmaputra rapids — Grade II to Grade V runs."],
-  ["Biking expeditions", "Mountain passes and forest roads through Sikkim, Meghalaya and Arunachal."],
-  ["Trekking", "Goechala, the living root bridges, Talley Valley and Mechuka."],
-  ["Hornbill Festival", "Nagaland's ten-day showcase of tribal dance, craft and cuisine each December."],
-  ["Living root bridges", "Ancient bioengineered bridges woven from rubber-tree roots in Meghalaya."],
-  ["Paragliding", "Soar over Sikkim's valleys and Meghalaya's hills with Himalayan vistas."],
-  ["Loktak lake cruise", "Glide past floating islands to the world's only floating national park."],
-  ["Culinary journeys", "Assam's smoky duck curry, Sikkim's momos, Nagaland's bamboo-shoot fry."],
+const ACTIVITIES: [string, string, string][] = [
+  ["White-water rafting", "Teesta & Brahmaputra rapids, Grade II to V.", "Adventure"],
+  ["Biking expeditions", "Mountain passes through Sikkim, Meghalaya & Arunachal.", "Adventure"],
+  ["High-Himalaya trekking", "Goechala, Dzükou, Talley Valley and Mechuka.", "Trek"],
+  ["Hornbill Festival", "Nagaland's ten-day tribal showcase each December.", "Culture"],
+  ["Living root bridges", "Bioengineered rubber-root spans in Meghalaya.", "Nature"],
+  ["Paragliding", "Soar over Sikkim's valleys with Himalayan vistas.", "Adventure"],
+  ["Loktak Lake cruise", "Floating islands and the world's only floating park.", "Nature"],
+  ["Culinary trails", "Smoky duck curry, momos and bamboo-shoot fry.", "Culture"],
 ];
+
+/** Month bands for the calendar strip: clay = peak, sand = shoulder, moss = monsoon. */
+const MONTH_TONE: { m: string; tone: "peak" | "shoulder" | "monsoon" }[] = [
+  { m: "J", tone: "peak" }, { m: "F", tone: "peak" }, { m: "M", tone: "peak" }, { m: "A", tone: "peak" },
+  { m: "M", tone: "shoulder" }, { m: "J", tone: "shoulder" },
+  { m: "J", tone: "monsoon" }, { m: "A", tone: "monsoon" }, { m: "S", tone: "monsoon" },
+  { m: "O", tone: "peak" }, { m: "N", tone: "peak" }, { m: "D", tone: "peak" },
+];
+
+const MONTH_FILL: Record<"peak" | "shoulder" | "monsoon", string> = {
+  peak: "bg-[#C98A5E]",
+  shoulder: "bg-[#E9C49A]",
+  monsoon: "bg-[#6E8E6A]",
+};
 
 const CUISINE = [
   ["Assam", "Duck Curry", "Slow-cooked with ash gourd and crushed black pepper.", "/images/food/duck-curry.jpg"],
@@ -58,12 +73,49 @@ const CUISINE = [
   ["Mizoram", "Bai", "Slow stew of vegetables, bamboo and pork.", "/images/food/bai.jpg"],
 ];
 
-const AIRPORTS = [
-  ["Guwahati, Assam", "Primary gateway"],
-  ["Bagdogra, WB", "Darjeeling & Sikkim"],
-  ["Shillong (Umroi)", "Cherrapunjee & bridges"],
-  ["Dibrugarh, Assam", "Upper Assam & Arunachal"],
-];
+/** Arrival modes. One panel per mode, paired with a layer on the map. */
+const ARRIVALS: Record<
+  ArrivalMode,
+  { tab: string; eyebrow: string; head: string; blurb: string; rows: [string, string, string][]; note?: string }
+> = {
+  air: {
+    tab: "By air",
+    eyebrow: "Gateway airports",
+    head: "Fly in — we take it from there.",
+    blurb: "Direct flights from Delhi, Mumbai, Kolkata & Bengaluru; international via Bangkok & Paro.",
+    rows: [
+      ["Guwahati", "GAU", "Primary gateway"],
+      ["Bagdogra", "IXB", "Darjeeling & Sikkim"],
+      ["Dibrugarh", "DIB", "Upper Assam & Arunachal"],
+      ["Imphal", "IMF", "Manipur & Loktak"],
+    ],
+  },
+  train: {
+    tab: "By train",
+    eyebrow: "Major railheads",
+    head: "Scenic, and the budget option.",
+    blurb: "Sleepers run from Kolkata and Delhi into the valley, then we drive you the rest of the way.",
+    rows: [
+      ["Saraighat Express", "~18 hrs", "Howrah → Guwahati"],
+      ["Dibrugarh Rajdhani", "~37 hrs", "New Delhi → Dibrugarh"],
+      ["Kanchanjunga Express", "~37 hrs", "Sealdah → Agartala"],
+      ["Nagaland railhead", "Dimapur", "For Kohima & Hornbill"],
+    ],
+  },
+  road: {
+    tab: "By road",
+    eyebrow: "Road stops & routes",
+    head: "The way you actually see it.",
+    blurb: "State highways link every hub. These are the three corridors we run most often.",
+    rows: [
+      ["Guwahati → Cherrapunjee", "~153 km", "via Shillong"],
+      ["Tezpur → Tawang", "~328 km", "via Bomdila & Sela"],
+      ["Jorhat → Mechuka", "~540 km", "via Pasighat"],
+      ["Ziro & Mawlynnong", "On request", "Local cabs, pre-booked"],
+    ],
+    note: "For remote valleys we book local drivers weeks ahead — they know the road conditions.",
+  },
+};
 
 function CountUp({ to, prefix = "" }: { to: number; prefix?: string }) {
   const [n, setN] = useState(0);
@@ -92,6 +144,10 @@ function CountUp({ to, prefix = "" }: { to: number; prefix?: string }) {
 
 export default function NortheastPage() {
   const [active, setActive] = useState(0);
+  const [arrival, setArrival] = useState<ArrivalMode>("air");
+  // -1 until mounted: the month depends on the reader's clock, so rendering it
+  // during SSR would mark the wrong cell until hydration caught up.
+  const [thisMonth, setThisMonth] = useState(-1);
   const swTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startAuto = () => {
@@ -102,8 +158,12 @@ export default function NortheastPage() {
   useEffect(() => {
     // Only auto-advance where the preview sits beside the list. On phones the
     // panel expands inline, so rotating it would move content under the reader.
+    const frame = requestAnimationFrame(() => setThisMonth(new Date().getMonth()));
     if (window.matchMedia("(min-width: 1024px)").matches) startAuto();
-    return () => { if (swTimer.current) clearInterval(swTimer.current); };
+    return () => {
+      cancelAnimationFrame(frame);
+      if (swTimer.current) clearInterval(swTimer.current);
+    };
   }, []);
 
   return (
@@ -244,8 +304,8 @@ export default function NortheastPage() {
         </div>
       </section>
 
-      {/* iconic stops */}
-      <Section eyebrow="Must-visit places" title="Landmarks worth the detour.">
+      {/* iconic stops — the comp keeps all copy inside the frame */}
+      <Section eyebrow="Must-see landmarks" title="Landmarks worth the detour.">
         <div className="grid gap-5 md:grid-cols-2">
           {STOPS.map((stop, i) => (
             <motion.div
@@ -255,39 +315,32 @@ export default function NortheastPage() {
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, margin: "-6%" }}
-              className="group overflow-hidden rounded-[20px] border border-ink/[0.09] bg-white"
+              className="group relative h-[400px] overflow-hidden rounded-[20px] shadow-[0_30px_60px_-46px_rgba(20,17,11,0.55)]"
             >
-              <div className="relative h-[210px] overflow-hidden sm:h-[260px]">
-                <Image
-                  src={stop.image}
-                  alt={stop.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 660px"
-                  className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
-                />
-                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,17,11,0.82)_4%,rgba(20,17,11,0.1)_54%,rgba(20,17,11,0)_86%)]" />
-                <div className="absolute inset-x-[22px] bottom-[18px] flex items-end justify-between gap-3 text-paper">
-                  <div>
-                    <p className="mb-1.5 text-[12px] font-bold uppercase tracking-[0.16em] text-[#E3B98A]">{stop.state}</p>
-                    <h3 className="font-display text-[23px] font-bold leading-tight sm:text-[26px]">{stop.name}</h3>
-                  </div>
-                  <span className="whitespace-nowrap rounded-full bg-paper/15 px-3 py-[5px] text-[11.5px] font-semibold backdrop-blur-sm">
-                    {stop.best}
-                  </span>
-                </div>
-              </div>
-              <div className="p-[26px]">
-                <p className="mb-4 text-sm leading-relaxed text-[#5b5749]">{stop.desc}</p>
-                <div className="flex gap-6 border-t border-ink/[0.08] pt-3.5">
-                  <div>
-                    <p className="mb-1 text-[11.5px] font-semibold uppercase tracking-[0.08em] text-[#a49d8c]">Permit</p>
-                    <p className="text-[13px] font-semibold">{stop.permit}</p>
-                  </div>
-                  <div>
-                    <p className="mb-1 text-[11.5px] font-semibold uppercase tracking-[0.08em] text-[#a49d8c]">Do</p>
-                    <p className="text-[13px] font-semibold">{stop.act}</p>
-                  </div>
-                </div>
+              <Image
+                src={stop.image}
+                alt={stop.name}
+                fill
+                sizes="(max-width: 768px) 100vw, 660px"
+                className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,17,11,0.92)_6%,rgba(20,17,11,0.28)_46%,rgba(20,17,11,0.05)_78%)]" />
+
+              <span className="absolute right-[22px] top-[22px] rounded-full bg-paper/15 px-3 py-[5px] font-mono text-[11.5px] text-paper backdrop-blur-sm">
+                {stop.best}
+              </span>
+
+              <div className="absolute inset-x-[22px] bottom-[22px] text-paper sm:inset-x-[26px] sm:bottom-[26px]">
+                <p className="mb-2 text-[11.5px] font-bold uppercase tracking-[0.16em] text-[#E3B98A]">
+                  {stop.state}
+                </p>
+                <h3 className="mb-2.5 font-display text-[25px] font-bold leading-tight tracking-[-0.015em] sm:text-[29px]">
+                  {stop.name}
+                </h3>
+                <p className="mb-4 max-w-[440px] text-[14px] leading-relaxed text-paper/85">{stop.desc}</p>
+                <p className="border-t border-paper/20 pt-3.5 text-[11.5px] font-semibold uppercase tracking-[0.12em] text-paper/60">
+                  {stop.permit} <span className="text-paper/35">·</span> {stop.act}
+                </p>
               </div>
             </motion.div>
           ))}
@@ -319,6 +372,44 @@ export default function NortheastPage() {
             </p>
           </motion.div>
 
+          {/* Year at a glance. The current month is outlined and marked, so the
+              question "is now a good time?" is answered without reading a table. */}
+          <motion.div
+            variants={reveal}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-6%" }}
+            className="mb-12 sm:mb-14"
+          >
+            <div className="flex gap-1.5 sm:gap-2">
+              {MONTH_TONE.map(({ m, tone }, i) => (
+                <div key={`${m}-${i}`} className="flex-1">
+                  <div
+                    className={`h-11 rounded-[10px] sm:h-14 ${MONTH_FILL[tone]} ${
+                      i === thisMonth ? "ring-2 ring-paper ring-offset-2 ring-offset-inkdeep" : ""
+                    }`}
+                  />
+                  <p className="mt-2 text-center text-[11.5px] font-semibold text-paper/60">{m}</p>
+                  {i === thisMonth ? (
+                    <p className="text-center text-[10px] font-bold uppercase tracking-[0.14em] text-[#E3B98A]">
+                      now
+                    </p>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+              {([["peak", "Peak"], ["shoulder", "Shoulder"], ["monsoon", "Monsoon"]] as const).map(
+                ([tone, label]) => (
+                  <span key={tone} className="flex items-center gap-2 text-[12.5px] text-paper/60">
+                    <span className={`h-2.5 w-2.5 rounded-full ${MONTH_FILL[tone]}`} />
+                    {label}
+                  </span>
+                ),
+              )}
+            </div>
+          </motion.div>
+
           <div className="grid gap-5 lg:grid-cols-3">
             {SEASONS.map((season, i) => (
               <motion.div
@@ -328,10 +419,8 @@ export default function NortheastPage() {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: "-6%" }}
-                className={`rounded-[20px] border p-[26px] transition-colors duration-500 sm:p-[30px] ${
-                  season.peak
-                    ? "border-clay-tint/35 bg-clay/[0.14]"
-                    : "border-paper/12 bg-paper/[0.04] hover:border-paper/25"
+                className={`px-0 lg:px-8 lg:first:pl-0 lg:last:pr-0 ${
+                  i > 0 ? "border-t border-paper/12 pt-7 lg:border-l lg:border-t-0 lg:pt-0" : ""
                 }`}
               >
                 <div className="mb-1.5 flex items-center justify-between gap-3">
@@ -360,54 +449,172 @@ export default function NortheastPage() {
         </div>
       </section>
 
-      {/* things to do */}
-      <Section eyebrow="Experiences" title="Unforgettable things to do.">
-        <div className="grid gap-[18px] sm:grid-cols-2 lg:grid-cols-4">
-          {ACTIVITIES.map(([t, d], i) => (
-            <motion.div key={t} custom={i % 4} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-4%" }} className="rounded-[18px] border border-ink/[0.09] bg-white p-6 transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1.5 hover:shadow-[0_24px_48px_-34px_rgba(20,17,11,0.4)]">
-              <span className="mb-3.5 block h-px w-8 bg-clay/45" />
-              <h3 className="mb-2 font-display text-lg font-bold">{t}</h3>
-              <p className="text-[13.5px] leading-relaxed text-mutedfg">{d}</p>
-            </motion.div>
-          ))}
+      {/* things to do — image against a list, per the comp */}
+      <Section eyebrow="Things to do" title="Experiences you won't forget.">
+        <div className="grid gap-8 lg:grid-cols-[0.44fr_1fr] lg:gap-12">
+          <motion.div
+            variants={reveal}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-6%" }}
+            className="relative h-[260px] overflow-hidden rounded-[20px] lg:h-auto lg:min-h-[520px]"
+          >
+            <Image
+              src="/images/ne/sikkim-alpine.jpg"
+              alt="Ridgelines above a Northeast hill town"
+              fill
+              sizes="(max-width: 1024px) 100vw, 520px"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,17,11,0.86)_4%,rgba(20,17,11,0.12)_52%,rgba(20,17,11,0)_84%)]" />
+            <div className="absolute inset-x-[26px] bottom-[24px] text-paper">
+              <p className="mb-2 text-[11.5px] font-bold uppercase tracking-[0.16em] text-[#E3B98A]">In the wild</p>
+              <h3 className="font-display text-[26px] font-bold leading-[1.02] tracking-[-0.02em] sm:text-[30px]">
+                From rapids to
+                <br />
+                ridgelines.
+              </h3>
+            </div>
+          </motion.div>
+
+          <ul className="flex flex-col border-t border-ink/12">
+            {ACTIVITIES.map(([title, desc, tag], i) => (
+              <motion.li
+                key={title}
+                custom={i}
+                variants={reveal}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-4%" }}
+                className="border-b border-ink/12"
+              >
+                <Link
+                  href="/packages"
+                  className="group flex items-center gap-4 py-5 transition-[padding] duration-200 ease-out hover:pl-2"
+                >
+                  <span className="w-[26px] shrink-0 font-serif text-[15px] italic text-clay/70">{i + 1}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-display text-[19px] font-bold leading-tight sm:text-[21px]">
+                      {title}
+                    </span>
+                    <span className="mt-0.5 block text-[13.5px] leading-relaxed text-[#5b5749]">{desc}</span>
+                  </span>
+                  <span className="hidden shrink-0 text-[11.5px] font-bold uppercase tracking-[0.14em] text-[#a49d8c] sm:block">
+                    {tag}
+                  </span>
+                  <span className="shrink-0 text-lg text-clay transition-transform duration-200 ease-out group-hover:translate-x-1">
+                    →
+                  </span>
+                </Link>
+              </motion.li>
+            ))}
+          </ul>
         </div>
       </Section>
 
-      {/* how to reach */}
-      <Section eyebrow="Getting here" title="How to reach the Northeast.">
-        <div className="grid gap-5 lg:grid-cols-2">
-          <motion.div variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-6%" }} className="rounded-[20px] bg-inkdeep p-[30px] text-paper">
-            <div className="mb-2 flex items-baseline gap-3"><h3 className="font-display text-xl font-bold">By air — fastest</h3></div>
-            <p className="mb-[18px] text-sm leading-relaxed text-paper/70">Direct flights from Delhi, Mumbai, Kolkata &amp; Bangalore; international via Bangkok, Singapore &amp; Paro.</p>
-            <div className="flex flex-col gap-2">
-              {AIRPORTS.map(([c, n]) => (
-                <div key={c} className="flex justify-between gap-3 rounded-xl border border-paper/12 bg-paper/[0.07] px-4 py-3"><span className="text-sm font-semibold">{c}</span><span className="text-[12.5px] text-paper/60">{n}</span></div>
-              ))}
+      {/* how to reach — map plus a panel per mode, as the comp specifies */}
+      <section className="mx-auto max-w-[1360px] px-6 pb-10 pt-[70px] lg:px-10">
+        <motion.div
+          variants={reveal}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-8%" }}
+          className="mb-9"
+        >
+          <p className="mb-3.5 eyebrow">How to arrive</p>
+          <h2 className="font-display text-[clamp(30px,3.8vw,56px)] font-bold tracking-[-0.028em]">
+            Getting to the Northeast.
+          </h2>
+          <p className="mt-5 max-w-[620px] text-[16.5px] leading-[1.7] text-[#5b5749]">
+            Most journeys begin at Guwahati and fan out across the eight states. Here&apos;s the lay of the
+            land — every gateway in, and the ways to travel once you&apos;ve arrived.
+          </p>
+        </motion.div>
+
+        <div className="grid gap-5 lg:grid-cols-[1fr_0.82fr]">
+          <motion.div
+            variants={reveal}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-6%" }}
+            className="overflow-hidden rounded-[20px] border border-ink/[0.09] bg-[#F5F0E6]"
+          >
+            {/* 3:2 keeps the projected viewBox undistorted at every width */}
+            <div className="aspect-[4/3] w-full sm:aspect-[3/2]">
+              <NeArrivalMap mode={arrival} />
             </div>
           </motion.div>
-          <div className="flex flex-col gap-5">
-            <motion.div custom={1} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-6%" }} className="rounded-[20px] border border-ink/[0.09] bg-white p-[30px]">
-              <div className="mb-2 flex items-baseline gap-3"><h3 className="font-display text-xl font-bold">By train — scenic &amp; budget</h3></div>
-              <p className="mb-3 text-sm leading-relaxed text-[#5b5749]">Major railheads at Guwahati, New Jalpaiguri, Dimapur, Dibrugarh &amp; Agartala.</p>
-              <ul className="flex flex-col gap-2 text-[13.5px]">
-                <li><b>Saraighat Express</b> <span className="text-[#8a8578]">— Howrah → Guwahati (~18 hrs)</span></li>
-                <li><b>Dibrugarh Rajdhani</b> <span className="text-[#8a8578]">— New Delhi → Dibrugarh (~37 hrs)</span></li>
-                <li><b>Kanchanjunga Express</b> <span className="text-[#8a8578]">— Sealdah → Agartala (~37 hrs)</span></li>
-              </ul>
-            </motion.div>
-            <motion.div custom={2} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-6%" }} className="rounded-[20px] border border-ink/[0.09] bg-white p-[30px]">
-              <div className="mb-2 flex items-baseline gap-3"><h3 className="font-display text-xl font-bold">By road — best for the experience</h3></div>
-              <p className="mb-3 text-sm leading-relaxed text-[#5b5749]">Scenic state highways connect the major hubs. Popular routes:</p>
-              <ul className="flex flex-col gap-2 text-[13.5px] text-[#5b5749]">
-                <li>Guwahati → Shillong → Cherrapunjee (~153 km)</li>
-                <li>Tezpur → Bomdila → Tawang (~328 km)</li>
-                <li>Jorhat → Pasighat → Mechuka (~540 km)</li>
-              </ul>
-              <p className="mt-3 text-[12.5px] font-semibold text-clay">For remote spots like Ziro or Mawlynnong, we book local cabs in advance.</p>
-            </motion.div>
-          </div>
+
+          <motion.div
+            custom={1}
+            variants={reveal}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-6%" }}
+            className="flex flex-col rounded-[20px] border border-ink/[0.09] bg-white p-5 sm:p-7"
+          >
+            <div
+              role="tablist"
+              aria-label="How to arrive"
+              className="mb-6 flex gap-1 rounded-full bg-[#F0E9DA] p-1"
+            >
+              {(Object.keys(ARRIVALS) as ArrivalMode[]).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  role="tab"
+                  aria-selected={arrival === m}
+                  onClick={() => setArrival(m)}
+                  className={`min-h-11 flex-1 rounded-full px-3 text-[13.5px] font-bold transition-colors ${
+                    arrival === m ? "bg-clay text-paper" : "text-[#6B6252] hover:text-ink"
+                  }`}
+                >
+                  {ARRIVALS[m].tab}
+                </button>
+              ))}
+            </div>
+
+            <p className="mb-2.5 text-[11.5px] font-bold uppercase tracking-[0.16em] text-clay">
+              {ARRIVALS[arrival].eyebrow}
+            </p>
+            <h3 className="mb-2 font-display text-[23px] font-bold tracking-[-0.015em]">
+              {ARRIVALS[arrival].head}
+            </h3>
+            <p className="mb-5 text-[14.5px] leading-relaxed text-[#5b5749]">{ARRIVALS[arrival].blurb}</p>
+
+            <ul className="flex flex-col border-t border-ink/[0.08]">
+              {ARRIVALS[arrival].rows.map(([name, code, note]) => (
+                <li
+                  key={name}
+                  className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-b border-ink/[0.08] py-3.5"
+                >
+                  <span className="flex items-baseline gap-2.5">
+                    <span className="h-[7px] w-[7px] shrink-0 rounded-full bg-clay" />
+                    <span className="font-display text-[16px] font-bold">{name}</span>
+                    <span className="font-mono text-[11.5px] text-[#a49d8c]">{code}</span>
+                  </span>
+                  <span className="text-[13px] text-[#6B6252]">{note}</span>
+                </li>
+              ))}
+            </ul>
+
+            {ARRIVALS[arrival].note ? (
+              <p className="mt-4 text-[12.5px] font-semibold leading-relaxed text-clay">
+                {ARRIVALS[arrival].note}
+              </p>
+            ) : null}
+
+            <a
+              href={WA_PLAN}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 flex min-h-[56px] items-center justify-between gap-3 rounded-full bg-clay px-6 text-[15px] font-bold text-paper transition-colors hover:bg-clay-dark"
+            >
+              Plan your route with SS Rao <span className="text-lg">→</span>
+            </a>
+          </motion.div>
         </div>
-      </Section>
+      </section>
 
       {/* cuisine — full-bleed plates, the reason the food images exist */}
       <section className="mt-24 bg-[#F0E9DA] px-6 py-[84px] sm:py-[100px] lg:px-10">

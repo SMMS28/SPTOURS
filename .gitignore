@@ -19,6 +19,7 @@
 # Pattern (not an exact path) so re-drops like "sptours-nextjs 2" are caught too.
 sptours-nextjs*
 Premium redesign with animations/
+export-northeast/
 /public/images/Premium redesign with animations.zip
 
 # next.js
