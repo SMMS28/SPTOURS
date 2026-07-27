@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, type Variants } from "framer-motion";
-import { HERO_SLIDES, WA_ENQUIRE, WA_PLAN, PHONE_TEL, EMAIL } from "@/lib/site";
+import { HERO_SLIDES, HERO_KEN_BURNS, WA_ENQUIRE, WA_PLAN, PHONE_TEL, EMAIL } from "@/lib/site";
 import { CountUp } from "@/components/count-up";
 import { FileCheck2, BedDouble, MapPin, MessageSquare } from "lucide-react";
 import { bentoSpan, type PackageView } from "@/lib/packages-view";
@@ -77,13 +77,35 @@ export function HomeExperience({
       {/* ===================== HERO ===================== */}
       <section className="relative h-screen min-h-[700px] overflow-hidden bg-inkdeep">
         <div className="absolute inset-0">
-          {HERO_SLIDES.map((s, i) => (
-            <div
-              key={s.src}
-              className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1600ms] ${s.anim} ${i === slide ? "opacity-100" : "opacity-0"}`}
-              style={{ backgroundImage: `url('${s.src}')` }}
-            />
-          ))}
+          {HERO_SLIDES.map((s, i) => {
+            // Only the current frame, the one before it (still fading out) and the
+            // one after (preloading) are mounted. Everything is on screen at
+            // opacity 0 otherwise, so next/image's lazy loading would fetch all
+            // eight at once — this keeps it to three, and the browser cache
+            // serves them instantly on the second lap.
+            const n = HERO_SLIDES.length;
+            const near = i === slide || i === (slide + 1) % n || i === (slide - 1 + n) % n;
+            if (!near) return null;
+            return (
+              <div
+                key={s.src}
+                className={`absolute inset-0 overflow-hidden transition-opacity duration-[1600ms] ${
+                  i === slide ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <Image
+                  src={s.src}
+                  alt=""
+                  aria-hidden="true"
+                  fill
+                  sizes="100vw"
+                  quality={80}
+                  priority={i === 0}
+                  className={`object-cover ${HERO_KEN_BURNS[i % HERO_KEN_BURNS.length]}`}
+                />
+              </div>
+            );
+          })}
         </div>
         <div className="absolute inset-0 bg-[linear-gradient(101deg,rgba(20,17,11,0.82)_0%,rgba(20,17,11,0.44)_42%,rgba(20,17,11,0.1)_72%,rgba(20,17,11,0)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(20,17,11,0.74)_0%,rgba(20,17,11,0)_42%)]" />
