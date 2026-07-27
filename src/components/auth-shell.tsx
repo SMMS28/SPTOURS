@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { WA_ENQUIRE } from "@/lib/site";
+import { BackTo } from "@/components/back-link";
 import {
   signIn,
   signUp,
@@ -41,16 +42,19 @@ export function AuthShell({
     <div className="grid min-h-screen lg:grid-cols-[46%_54%]">
       {/* left: form */}
       <div className="relative flex flex-col px-[6vw] py-10">
-        <Link href="/" className="self-start">
-          <Image
+        <div className="flex items-center gap-3">
+          <Link href="/" className="self-start">
+            <Image
             src="/images/logo-2026.png"
             alt="SP Tours and Travels"
             width={640}
             height={286}
-            className="h-[64px] w-auto"
-            priority
-          />
-        </Link>
+              className="h-[64px] w-auto"
+              priority
+            />
+          </Link>
+          <BackTo href="/" label="Back to site" className="ml-auto" />
+        </div>
 
         <div className="mx-auto flex w-full max-w-[440px] flex-1 flex-col justify-center py-10">
           {mode !== "forgot" && (
@@ -186,7 +190,7 @@ export function AuthShell({
             <div>
               <div className="my-[26px] flex items-center gap-3.5">
                 <span className="h-px flex-1 bg-ink/15" />
-                <span className="font-mono text-[12px] sm:text-[11px] uppercase tracking-widest text-[#a49d8c]">or</span>
+                <span className="text-[11.5px] font-semibold uppercase tracking-widest text-[#a49d8c]">or</span>
                 <span className="h-px flex-1 bg-ink/15" />
               </div>
 
@@ -241,12 +245,12 @@ export function AuthShell({
         <div
           className="animate-kb absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/images/hero-bg/nilotpal-kalita-24vPDG707eM-unsplash.jpg')",
+            backgroundImage: "url('/images/pkg/sikkim-yumthang.jpg')",
           }}
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,17,11,0.35)_0%,rgba(20,17,11,0.25)_45%,rgba(20,17,11,0.8)_100%)]" />
         <div className="absolute inset-x-12 bottom-[52px] text-paper">
-          <p className="mb-[18px] font-mono text-xs uppercase tracking-[0.24em] text-paper/75">
+          <p className="mb-[18px] eyebrow eyebrow-paper">
             SP Tours &amp; Travels · Since 1986
           </p>
           <p className="max-w-[560px] font-display text-[40px] font-bold leading-[1.05] tracking-[-0.02em]">
@@ -262,7 +266,7 @@ export function AuthShell({
 }
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="mb-3 font-mono text-xs uppercase tracking-[0.24em] text-clay">{children}</p>;
+  return <p className="mb-3 eyebrow">{children}</p>;
 }
 function Heading({ children }: { children: React.ReactNode }) {
   return (

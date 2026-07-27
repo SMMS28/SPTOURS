@@ -7,6 +7,7 @@ import { motion, type Variants } from "framer-motion";
 import { wa, PHONE_TEL } from "@/lib/site";
 import type { PackageView } from "@/lib/packages-view";
 import { createBookingFromPlanner } from "@/lib/actions/bookings";
+import { BackTo, DismissBanner } from "@/components/back-link";
 import { toggleFavoritePackage } from "@/lib/actions/favorites";
 import { LocationConsent } from "@/components/location-consent";
 
@@ -81,17 +82,20 @@ export function PackageDetail({
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,17,11,0.55)_0%,rgba(20,17,11,0.25)_40%,rgba(20,17,11,0.86)_100%)]" />
         <div className="absolute inset-x-0 bottom-12">
           <div className="mx-auto max-w-[1360px] px-6 lg:px-10">
-            <p className="mb-4 font-mono text-xs uppercase tracking-[0.22em] text-paper/75">
-              <Link href="/" className="hover:text-paper">Home</Link> /{" "}
-              <Link href="/packages" className="hover:text-paper">Journeys</Link> / {pkg.title}
-            </p>
+            <div className="mb-5 flex flex-wrap items-center gap-3">
+              <BackTo href="/packages" label="All journeys" tone="paper" />
+              <p className="hidden eyebrow eyebrow-paper sm:block">
+                <Link href="/" className="hover:text-paper">Home</Link> /{" "}
+                <Link href="/packages" className="hover:text-paper">Journeys</Link> / {pkg.title}
+              </p>
+            </div>
             <div className="mb-4 flex flex-wrap items-center gap-3">
               {pkg.tag ? (
-                <span className="rounded-full bg-paper px-3.5 py-1.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-wider text-inkdeep">
+                <span className="rounded-full bg-paper px-3.5 py-1.5 text-[11.5px] font-bold uppercase tracking-wider text-inkdeep">
                   {pkg.tag}
                 </span>
               ) : null}
-              <span className="rounded-full border border-paper/30 bg-paper/15 px-3.5 py-1.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-wider text-paper">
+              <span className="rounded-full border border-paper/30 bg-paper/15 px-3.5 py-1.5 text-[11.5px] font-bold uppercase tracking-wider text-paper">
                 {pkg.region}
               </span>
               {pkg.bookable ? (
@@ -102,7 +106,7 @@ export function PackageDetail({
                   <button
                     type="submit"
                     aria-pressed={isSaved}
-                    className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-wider transition-colors ${
+                    className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[11.5px] font-bold uppercase tracking-wider transition-colors ${
                       isSaved
                         ? "border-clay bg-clay text-paper"
                         : "border-paper/30 bg-paper/15 text-paper hover:bg-paper/25"
@@ -132,13 +136,14 @@ export function PackageDetail({
       <section className="mx-auto grid max-w-[1360px] grid-cols-1 items-start gap-[60px] px-6 pb-10 pt-[70px] lg:grid-cols-[minmax(0,1fr)_380px] lg:px-10">
         <div>
           {notice ? (
-            <p className="mb-8 rounded-xl border border-clay/30 bg-clay/10 px-4 py-3 text-[14px] text-[#5b4636]">
-              {notice}
-            </p>
+            <div className="mb-8 flex items-start justify-between gap-3 rounded-xl border border-clay/30 bg-clay/10 px-4 py-3 text-[14px] text-[#5b4636]">
+              <p>{notice}</p>
+              <DismissBanner />
+            </div>
           ) : null}
 
           <motion.div variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-8%" }}>
-            <p className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-clay">Overview</p>
+            <p className="mb-4 eyebrow">Overview</p>
             {pkg.blurb ? (
               <p className="mb-5 text-[clamp(19px,1.7vw,24px)] font-medium leading-[1.5] tracking-[-0.01em]">
                 {pkg.blurb}
@@ -176,7 +181,7 @@ export function PackageDetail({
           {itinerary.length > 0 ? (
             <div className="mt-16">
               <motion.div variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true }} className="mb-[34px]">
-                <p className="mb-3.5 font-mono text-xs uppercase tracking-[0.3em] text-clay">Day by day</p>
+                <p className="mb-3.5 eyebrow">Day by day</p>
                 <h2 className="font-display text-[clamp(30px,3.4vw,46px)] font-bold tracking-[-0.02em]">
                   The full itinerary
                 </h2>
@@ -394,7 +399,7 @@ export function PackageDetail({
               <Link
                 key={p.slug}
                 href={`/packages/${p.slug}`}
-                className="group block transition-transform duration-500 hover:-translate-y-2"
+                className="group block transition-transform duration-200 ease-out hover:-translate-y-2"
               >
                 <div className="relative mb-4 h-[240px] overflow-hidden rounded-[18px]">
                   <Image
@@ -405,7 +410,7 @@ export function PackageDetail({
                     className="object-cover transition-transform duration-[800ms] group-hover:scale-[1.06]"
                   />
                 </div>
-                <p className="mb-2 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-clay">
+                <p className="mb-2 text-[11.5px] font-bold uppercase tracking-[0.1em] text-clay">
                   {p.region} · {p.duration}
                 </p>
                 <h3 className="mb-2 font-display text-[22px] font-bold">{p.title}</h3>

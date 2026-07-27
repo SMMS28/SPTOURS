@@ -18,6 +18,8 @@
 # raw redesign source drops — already integrated into src/, kept locally only.
 # Pattern (not an exact path) so re-drops like "sptours-nextjs 2" are caught too.
 sptours-nextjs*
+Premium redesign with animations/
+/public/images/Premium redesign with animations.zip
 
 # next.js
 /.next/
@@ -46,3 +48,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+
+# Agent tooling — installed skills and local agent config. Not product code, and
+# noise in a repo being handed to the client.
+.claude/
+.agents/
+skills-lock.json

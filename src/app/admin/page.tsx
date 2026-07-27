@@ -225,7 +225,7 @@ export default async function AdminPage() {
             {stats.recentInquiries.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-[13.5px]">
-                  <thead className="bg-[#f7f2e8] font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-[#8a8578]">
+                  <thead className="bg-[#f7f2e8] text-[11.5px] font-semibold uppercase tracking-[0.1em] text-[#8a8578]">
                     <tr>
                       <th className={th}>Traveller</th>
                       <th className={th}>Contact</th>
@@ -292,7 +292,7 @@ export default async function AdminPage() {
             {stats.recentBookings.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-[13.5px]">
-                  <thead className="bg-[#f7f2e8] font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-[#8a8578]">
+                  <thead className="bg-[#f7f2e8] text-[11.5px] font-semibold uppercase tracking-[0.1em] text-[#8a8578]">
                     <tr>
                       <th className={th}>Reference</th>
                       <th className={th}>Package</th>
@@ -344,7 +344,7 @@ function Stat({
       }`}
     >
       <p
-        className={`mb-3 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.12em] ${
+        className={`mb-3 text-[11.5px] font-bold uppercase tracking-[0.12em] ${
           dark ? "text-paper/60" : "text-[#8a8578]"
         }`}
       >

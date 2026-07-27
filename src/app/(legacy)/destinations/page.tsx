@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { BackTo } from "@/components/back-link";
 import { destinationCards } from "@/lib/data/media";
 import { getPublishedDestinations } from "@/lib/data/destinations";
 
@@ -11,6 +12,7 @@ export default async function DestinationsPage() {
 
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+      <BackTo href="/" label="Back" className="mb-7" />
       <h1 className="font-display text-3xl font-semibold">Destinations</h1>
       <p className="mt-2 text-mutedfg">Explore top places covered by our travel packages.</p>
 

@@ -6,6 +6,7 @@ import { motion, type Variants } from "framer-motion";
 import { wa, WA_ENQUIRE, PHONE_TEL, EMAIL } from "@/lib/site";
 import { submitInquiry } from "@/lib/actions/inquiries";
 import { LocationConsent } from "@/components/location-consent";
+import { DismissBanner } from "@/components/back-link";
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -106,12 +107,12 @@ export function ContactExperience({
       <section className="relative h-[420px] overflow-hidden bg-inkdeep">
         <div
           className="animate-kb absolute inset-0 bg-cover bg-[center_40%]"
-          style={{ backgroundImage: "url('/images/hero-bg/pexels-vijit-bagh-3435480-5414576.jpg')" }}
+          style={{ backgroundImage: "url('/images/pkg/meghalaya-explorer.jpg')" }}
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,17,11,0.55)_0%,rgba(20,17,11,0.3)_45%,rgba(20,17,11,0.85)_100%)]" />
         <div className="absolute inset-x-0 bottom-11">
           <div className="mx-auto max-w-[1360px] px-6 lg:px-10">
-            <p className="mb-4 font-mono text-xs uppercase tracking-[0.24em] text-paper/75">Home / Contact</p>
+            <p className="mb-4 eyebrow eyebrow-paper">Home / Contact</p>
             <h1 className="font-display text-[clamp(40px,5.6vw,80px)] font-bold leading-[0.96] tracking-[-0.028em] text-paper">
               Let&apos;s plan your trip
             </h1>
@@ -127,7 +128,7 @@ export function ContactExperience({
       <section className="mx-auto grid max-w-[1360px] grid-cols-1 items-start gap-14 px-6 pb-24 pt-20 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:px-10">
         {/* form */}
         <motion.div custom={0} variants={reveal} initial="hidden" animate="show" className="min-w-0">
-          <p className="mb-3.5 font-mono text-xs uppercase tracking-[0.3em] text-clay">Enquiry form</p>
+          <p className="mb-3.5 eyebrow">Enquiry form</p>
           <h2 className="mb-2.5 font-display text-[clamp(28px,3vw,42px)] font-bold tracking-[-0.02em]">
             Tell us a little, we&apos;ll do the rest
           </h2>
@@ -137,15 +138,16 @@ export function ContactExperience({
           </p>
 
           {notice ? (
-            <p
-              className={`mb-7 rounded-xl border px-4 py-3 text-[13.5px] ${
+            <div
+              className={`mb-7 flex items-start justify-between gap-3 rounded-xl border px-4 py-3 text-[13.5px] ${
                 notice.tone === "ok"
                   ? "border-[#3f7a4e]/30 bg-[#3f7a4e]/10 text-[#2f5c3a]"
                   : "border-clay/30 bg-clay/10 text-[#5b4636]"
               }`}
             >
-              {notice.text}
-            </p>
+              <p>{notice.text}</p>
+              <DismissBanner />
+            </div>
           ) : null}
 
           <form action={submitInquiry}>
@@ -265,7 +267,7 @@ export function ContactExperience({
             rel="noopener noreferrer"
             className="block rounded-[18px] bg-clay p-[26px] text-paper transition-[background,transform] duration-300 hover:-translate-y-1 hover:bg-clay-dark"
           >
-            <p className="mb-2 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.14em] text-paper/80">Fastest reply</p>
+            <p className="mb-2 text-[11.5px] font-bold uppercase tracking-[0.14em] text-paper/80">Fastest reply</p>
             <p className="mb-1 font-display text-2xl font-bold">Chat on WhatsApp</p>
             <p className="text-[13.5px] text-paper/85">Replies in minutes →</p>
           </a>
@@ -274,19 +276,19 @@ export function ContactExperience({
               href={signedIn ? `tel:${PHONE_TEL}` : "/login?next=%2Fcontact"}
               className="block rounded-[18px] border border-ink/10 bg-white p-[22px] transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-30px_rgba(20,17,11,0.4)]"
             >
-              <p className="mb-2.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.14em] text-clay">Phone</p>
+              <p className="mb-2.5 text-[11.5px] font-bold uppercase tracking-[0.14em] text-clay">Phone</p>
               <p className="font-display text-[17px] font-bold leading-tight">{signedIn ? "Call SS Rao" : "Sign in to call"}</p>
             </a>
             <a
               href={`mailto:${EMAIL}`}
               className="block rounded-[18px] border border-ink/10 bg-white p-[22px] transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-30px_rgba(20,17,11,0.4)]"
             >
-              <p className="mb-2.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.14em] text-clay">Email</p>
+              <p className="mb-2.5 text-[11.5px] font-bold uppercase tracking-[0.14em] text-clay">Email</p>
               <p className="break-words font-display text-[14.5px] font-bold leading-tight">{EMAIL}</p>
             </a>
           </div>
           <div className="rounded-[18px] border border-ink/10 bg-white p-6">
-            <p className="mb-3 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.14em] text-clay">Our office</p>
+            <p className="mb-3 text-[11.5px] font-bold uppercase tracking-[0.14em] text-clay">Our office</p>
             <p className="mb-3.5 text-[14.5px] leading-relaxed text-[#3f3b30]">
               T1, S. R. Residency, Sri Lakshmi Nagar,
               <br />
@@ -301,8 +303,8 @@ export function ContactExperience({
           </div>
           <div className="relative h-[200px] overflow-hidden rounded-[18px]">
             <Image
-              src="/images/hero-bg/nilotpal-kalita-24vPDG707eM-unsplash.jpg"
-              alt="Northeast India"
+              src="/images/ne/assam-tea.jpg"
+              alt="Tea gardens in Assam"
               fill
               sizes="40vw"
               className="object-cover"

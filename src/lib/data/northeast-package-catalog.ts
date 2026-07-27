@@ -29,6 +29,7 @@ export const northeastCatalogPackages: TravelPackage[] = [
     package_images: [
       { storage_path: "/images/northeast/north-sikkim-highlights-6d5n-1.jpg", sort_order: 1 },
       { storage_path: "/images/northeast/north-sikkim-highlights-6d5n-2.jpg", sort_order: 2 },
+      { storage_path: "/images/pkg/north-sikkim.jpg", sort_order: 3 },
     ],
     package_itinerary_days: [
       { day_number: 1, title: "Arrival at Gangtok", details: "Transfer and acclimatization in Gangtok." },
@@ -54,6 +55,7 @@ export const northeastCatalogPackages: TravelPackage[] = [
     package_images: [
       { storage_path: "/images/northeast/sikkim-getaway-yumthang-5d4n-1.jpg", sort_order: 1 },
       { storage_path: "/images/northeast/sikkim-getaway-yumthang-5d4n-2.jpg", sort_order: 2 },
+      { storage_path: "/images/pkg/sikkim-yumthang.jpg", sort_order: 3 },
     ],
   },
   {
@@ -74,6 +76,7 @@ export const northeastCatalogPackages: TravelPackage[] = [
     package_images: [
       { storage_path: "/images/northeast/gangtok-darjeeling-yak-ride-6d5n-1.jpg", sort_order: 1 },
       { storage_path: "/images/northeast/gangtok-darjeeling-yak-ride-6d5n-2.jpg", sort_order: 2 },
+      { storage_path: "/images/pkg/gangtok-darjeeling.jpg", sort_order: 3 },
     ],
   },
   {
@@ -114,6 +117,7 @@ export const northeastCatalogPackages: TravelPackage[] = [
     package_images: [
       { storage_path: "/images/northeast/arunachal-tawang-bomdila-dirang-6d5n-1.jpg", sort_order: 1 },
       { storage_path: "/images/northeast/arunachal-tawang-bomdila-dirang-6d5n-2.jpg", sort_order: 2 },
+      { storage_path: "/images/pkg/arunachal-classic.jpg", sort_order: 3 },
     ],
     package_itinerary_days: [
       { day_number: 1, title: "Guwahati to Bomdila", details: "Drive via Nameri and Tipi Orchidarium." },
@@ -142,6 +146,7 @@ export const northeastCatalogPackages: TravelPackage[] = [
     package_images: [
       { storage_path: "/images/northeast/arunachal-meghalaya-grand-circuit-10d9n-1.jpg", sort_order: 1 },
       { storage_path: "/images/northeast/arunachal-meghalaya-grand-circuit-10d9n-2.jpg", sort_order: 2 },
+      { storage_path: "/images/pkg/grand-circuit.jpg", sort_order: 3 },
     ],
     package_itinerary_days: [
       { day_number: 1, title: "Arrive Guwahati", details: "Airport transfer and hotel check-in." },
@@ -174,6 +179,7 @@ export const northeastCatalogPackages: TravelPackage[] = [
     package_images: [
       { storage_path: "/images/northeast/meghalaya-shillong-cherrapunjee-mawlynnong-5d4n-1.jpg", sort_order: 1 },
       { storage_path: "/images/northeast/meghalaya-shillong-cherrapunjee-mawlynnong-5d4n-2.jpg", sort_order: 2 },
+      { storage_path: "/images/pkg/meghalaya-explorer.jpg", sort_order: 3 },
     ],
     package_itinerary_days: [
       { day_number: 1, title: "Guwahati to Shillong", details: "Arrive and visit Umiam Lake en route." },

@@ -93,7 +93,7 @@ export function ConfirmFormSubmits() {
         aria-label="Confirmation dialog"
         className="animate-fade-up relative w-full max-w-md rounded-[22px] border border-ink/10 bg-card p-7 shadow-[0_40px_80px_-40px_rgba(20,17,11,0.55)]"
       >
-        <p className="mb-2.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.24em] text-clay">
+        <p className="mb-2.5 eyebrow">
           Please confirm
         </p>
         <p className="font-display text-[22px] font-bold leading-snug tracking-[-0.01em] text-ink">

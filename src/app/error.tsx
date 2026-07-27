@@ -27,7 +27,7 @@ export default function Error({
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-6 py-24">
       <div className="w-full max-w-[560px] rounded-[22px] border border-ink/10 bg-white p-10 text-center">
-        <p className="mb-3 font-mono text-xs uppercase tracking-[0.24em] text-clay">
+        <p className="mb-3 eyebrow">
           Something went wrong
         </p>
         <h1 className="mb-3 font-display text-[clamp(26px,3vw,36px)] font-bold tracking-[-0.02em]">

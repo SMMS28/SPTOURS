@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/actions/auth";
 import { updateProfile } from "@/lib/actions/profile";
 import { wa, inr } from "@/lib/site";
+import { DismissBanner } from "@/components/back-link";
 
 type Tab = "trips" | "past" | "saved" | "enquiries" | "details";
 
@@ -27,7 +28,7 @@ const one = (value: unknown): PackageRef => {
   return (Array.isArray(value) ? value[0] : value) as PackageRef;
 };
 
-const FALLBACK_IMAGE = "/images/hero-bg/nilotpal-kalita-24vPDG707eM-unsplash.jpg";
+const FALLBACK_IMAGE = "/images/pkg/north-sikkim.jpg";
 
 const STATUS: Record<string, [string, string, string]> = {
   confirmed: ["Confirmed", "#3f7a4e", "rgba(63,122,78,0.12)"],
@@ -263,7 +264,7 @@ export default async function ProfilePage({
 
       {/* welcome */}
       <section className="mx-auto w-full max-w-[1200px] px-6 pb-6 pt-12 lg:px-10">
-        <p className="mb-3 font-mono text-xs uppercase tracking-[0.24em] text-clay">Your account</p>
+        <p className="mb-3 eyebrow">Your account</p>
         <h1 className="font-display text-[clamp(34px,4vw,56px)] font-bold leading-none tracking-[-0.025em]">
           Welcome back, {firstName}.
         </h1>
@@ -322,9 +323,10 @@ export default async function ProfilePage({
 
       <main className="mx-auto w-full max-w-[1200px] flex-1 px-6 pb-24 pt-9 lg:px-10">
         {params.message ? (
-          <p className="mb-7 rounded-xl border border-clay/30 bg-clay/10 px-4 py-3 text-[13.5px] text-[#5b4636]">
-            {params.message}
-          </p>
+          <div className="mb-7 flex items-start justify-between gap-3 rounded-xl border border-clay/30 bg-clay/10 px-4 py-3 text-[13.5px] text-[#5b4636]">
+            <p>{params.message}</p>
+            <DismissBanner />
+          </div>
         ) : null}
 
         {!hasSupabaseEnv ? (
@@ -387,7 +389,7 @@ export default async function ProfilePage({
                       <div className="flex flex-col p-6">
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <p className="mb-2 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-clay">
+                            <p className="mb-2 text-[11.5px] font-bold uppercase tracking-[0.1em] text-clay">
                               {[pkg?.destination, pkg?.duration_days ? `${pkg.duration_days}D` : null]
                                 .filter(Boolean)
                                 .join(" · ") || "Journey"}
@@ -458,7 +460,7 @@ export default async function ProfilePage({
                     <Link
                       key={favorite.id}
                       href={`/packages/${pkg.slug}`}
-                      className="block overflow-hidden rounded-[20px] border border-ink/8 bg-white transition-transform duration-500 hover:-translate-y-2"
+                      className="block overflow-hidden rounded-[20px] border border-ink/8 bg-white transition-transform duration-200 ease-out hover:-translate-y-2"
                     >
                       <div className="relative h-[200px] overflow-hidden">
                         <Image
@@ -473,7 +475,7 @@ export default async function ProfilePage({
                         </span>
                       </div>
                       <div className="p-5">
-                        <p className="mb-2 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-clay">
+                        <p className="mb-2 text-[11.5px] font-bold uppercase tracking-[0.1em] text-clay">
                           {[pkg.destination, pkg.duration_days ? `${pkg.duration_days}D` : null]
                             .filter(Boolean)
                             .join(" · ")}
@@ -513,7 +515,7 @@ export default async function ProfilePage({
                     >
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <p className="mb-1.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-clay">
+                          <p className="mb-1.5 text-[11.5px] font-bold uppercase tracking-[0.1em] text-clay">
                             {pkg?.title ?? "General enquiry"}
                           </p>
                           <p className="text-[13px] text-[#8a8578]">

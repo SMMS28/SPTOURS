@@ -1,4 +1,5 @@
 import { blogHighlights } from "@/lib/data/feature-catalog";
+import { BackTo } from "@/components/back-link";
 
 export const metadata = {
   title: "Blog | SP TOURS AND TRAVELLS",
@@ -7,6 +8,7 @@ export const metadata = {
 export default function BlogPage() {
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+      <BackTo href="/" label="Back" className="mb-7" />
       <h1 className="font-display text-3xl font-semibold">Travel blog</h1>
       <p className="mt-2 text-mutedfg">Guides, destination comparisons, and itinerary ideas.</p>
 

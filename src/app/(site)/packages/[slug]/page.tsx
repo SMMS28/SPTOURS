@@ -31,8 +31,8 @@ export async function generateMetadata({
 
 /** Keeps the 3-up gallery grid intact when a package has fewer than 3 images. */
 const GALLERY_PADDING = [
-  "/images/hero-bg/pexels-vijit-bagh-3435480-5414576.jpg",
-  "/images/hero-bg/nilotpal-kalita-24vPDG707eM-unsplash.jpg",
+  "/images/pkg/grand-circuit.jpg",
+  "/images/ne/mountain-horizons.jpg",
 ];
 
 export default async function PackagePage({

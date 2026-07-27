@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Bricolage_Grotesque, Manrope, Space_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Instrument_Serif, Manrope, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { ConfirmFormSubmits } from "@/components/confirm-form-submits";
 import { Observability } from "@/components/observability";
@@ -15,6 +15,16 @@ const sans = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+});
+
+/* Editorial accent face. Carries the section labels and the italic emphasis that
+   used to be tracked-uppercase monospace on every single section — that pattern
+   is what made the site read as generated rather than art-directed. */
+const serif = Instrument_Serif({
+  variable: "--font-instrument",
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
 });
 
 const mono = Space_Mono({
@@ -44,7 +54,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
+      className={`${display.variable} ${sans.variable} ${serif.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-paper text-ink">
         <Suspense fallback={null}>
@@ -65,6 +75,7 @@ export default function RootLayout({
             remains in src/components/quote-popup.tsx if it is ever wanted behind an
             explicit trigger. */}
         {children}
+        <div className="paper-grain" aria-hidden="true" />
       </body>
     </html>
   );

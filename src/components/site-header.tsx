@@ -14,6 +14,7 @@ export const SiteHeader = async ({ solid = false }: { solid?: boolean }) => {
     <SiteHeaderClient
       isAuthenticated={Boolean(user)}
       isAdmin={role === "admin"}
+      email={user?.email ?? null}
       solid={solid}
     />
   );

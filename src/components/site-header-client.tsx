@@ -5,7 +5,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Phone } from "lucide-react";
-import { signOut } from "@/lib/actions/auth";
+import { MobileMenu } from "@/components/mobile-menu";
+import { ProfileMenu } from "@/components/profile-menu";
 import { PHONE_TEL, WA_PLAN } from "@/lib/site";
 
 /**
@@ -33,6 +34,7 @@ const LIGHT_HERO_ROUTES = ["/northeast"];
 type SiteHeaderClientProps = {
   isAuthenticated: boolean;
   isAdmin: boolean;
+  email?: string | null;
   /**
    * Render opaque from the start. The redesigned (site) pages all open with a
    * dark full-bleed hero, so there the header can stay transparent until you
@@ -45,6 +47,7 @@ type SiteHeaderClientProps = {
 export function SiteHeaderClient({
   isAuthenticated,
   isAdmin,
+  email,
   solid = false,
 }: SiteHeaderClientProps) {
   const pathname = usePathname();
@@ -133,64 +136,32 @@ export function SiteHeaderClient({
               Sign in
             </Link>
           ) : (
-            <form action={signOut} data-confirm-message="Confirm logout?">
-              <button
-                type="submit"
-                className={`hidden text-[13.5px] font-semibold transition-colors duration-500 hover:opacity-60 lg:inline ${linkColor}`}
-              >
-                Logout
-              </button>
-            </form>
+            <div className="hidden lg:block">
+              <ProfileMenu email={email} isAdmin={isAdmin} tone={opaque ? "ink" : "paper"} />
+            </div>
           )}
 
           <a
             href={WA_PLAN}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-11 items-center rounded-full bg-clay px-5 text-sm font-bold text-paper shadow-[0_10px_26px_-14px_rgba(155,106,76,0.9)] transition-[background,transform] duration-300 hover:-translate-y-0.5 hover:bg-clay-dark"
+            className="hidden h-11 items-center rounded-full bg-clay px-5 text-sm font-bold text-paper shadow-[0_10px_26px_-14px_rgba(155,106,76,0.9)] transition-[background,transform] duration-300 hover:-translate-y-0.5 hover:bg-clay-dark sm:inline-flex"
           >
             Plan my trip
           </a>
+
+          {/* Drawer replaces the horizontally scrolling nav row, which pushed
+              destinations off-screen with no affordance that more existed. */}
+          <MobileMenu
+            links={links}
+            isAuthenticated={isAuthenticated}
+            isAdmin={isAdmin}
+            email={email}
+            tone={opaque ? "ink" : "paper"}
+          />
         </div>
       </div>
 
-      {/* Mobile nav — the redesign shipped desktop-only, which left phones with
-          no navigation at all. Scrollable row, same links. */}
-      <div className="px-4 pb-2.5 lg:hidden">
-        {/* min-h-11 on each item: these were 20px tall, well under the 44px
-            minimum for a touch target. */}
-        <nav
-          className={`flex items-center gap-1 overflow-x-auto whitespace-nowrap text-[13.5px] font-semibold [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${linkColor}`}
-        >
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              aria-current={isActive(l.href) ? "page" : undefined}
-              className={`inline-flex min-h-11 items-center px-2.5 ${isActive(l.href) ? "text-clay" : ""}`}
-            >
-              {l.label}
-            </Link>
-          ))}
-          {isAuthenticated ? (
-            <a href={`tel:${PHONE_TEL}`} className="inline-flex min-h-11 items-center gap-1.5 px-2.5">
-              <Phone className="h-3.5 w-3.5" />
-              SS Rao
-            </a>
-          ) : null}
-          {!isAuthenticated ? (
-            <Link href="/login" className="inline-flex min-h-11 items-center px-2.5">
-              Sign in
-            </Link>
-          ) : (
-            <form action={signOut} data-confirm-message="Confirm logout?">
-              <button type="submit" className="inline-flex min-h-11 items-center px-2.5 font-semibold">
-                Logout
-              </button>
-            </form>
-          )}
-        </nav>
-      </div>
     </header>
   );
 }

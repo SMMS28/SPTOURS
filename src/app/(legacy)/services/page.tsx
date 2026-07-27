@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BackTo } from "@/components/back-link";
 import { productOfferings } from "@/lib/data/feature-catalog";
 import { linkButton } from "@/lib/link-styles";
 
@@ -9,6 +10,7 @@ export const metadata = {
 export default function ServicesPage() {
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+      <BackTo href="/" label="Back" className="mb-7" />
       <h1 className="font-display text-3xl font-semibold">Travel services</h1>
       <p className="mt-2 max-w-3xl text-mutedfg">
         Explore services mapped to your package catalog and quickly jump to the right tour category.

@@ -7,6 +7,7 @@ import { motion, type Variants } from "framer-motion";
 import { wa } from "@/lib/site";
 import { matchesRegionFilter, type PackageView } from "@/lib/packages-view";
 import { toggleFavoritePackage } from "@/lib/actions/favorites";
+import { DismissBanner } from "@/components/back-link";
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -54,7 +55,7 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,17,11,0.6)_0%,rgba(20,17,11,0.35)_45%,rgba(20,17,11,0.82)_100%)]" />
         <div className="absolute inset-x-0 bottom-11">
           <div className="mx-auto max-w-[1360px] px-6 lg:px-10">
-            <p className="mb-4 font-mono text-xs uppercase tracking-[0.24em] text-paper/75">Home / Journeys</p>
+            <p className="mb-4 eyebrow eyebrow-paper">Home / Journeys</p>
             <h1 className="font-display text-[clamp(44px,6vw,84px)] font-bold leading-[0.96] tracking-[-0.028em] text-paper">
               All journeys
             </h1>
@@ -93,9 +94,10 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
 
       {notice ? (
         <div className="mx-auto max-w-[1360px] px-6 pt-6 lg:px-10">
-          <p className="rounded-xl border border-clay/30 bg-clay/10 px-4 py-3 text-[13.5px] text-[#5b4636]">
-            {notice}
-          </p>
+          <div className="flex items-start justify-between gap-3 rounded-xl border border-clay/30 bg-clay/10 px-4 py-3 text-[13.5px] text-[#5b4636]">
+            <p>{notice}</p>
+            <DismissBanner />
+          </div>
         </div>
       ) : null}
 
@@ -112,7 +114,7 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
                 variants={reveal}
                 initial="hidden"
                 animate="show"
-                className="flex flex-col overflow-hidden rounded-[22px] border border-ink/10 bg-card transition-[transform,box-shadow] duration-500 hover:-translate-y-2 hover:shadow-[0_34px_66px_-40px_rgba(20,17,11,0.45)]"
+                className="flex flex-col overflow-hidden rounded-[22px] border border-ink/10 bg-card transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-2 hover:shadow-[0_34px_66px_-40px_rgba(20,17,11,0.45)]"
               >
                 <div className="relative h-[230px] overflow-hidden">
                   <Image
@@ -123,7 +125,7 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
                     className="object-cover transition-transform duration-[800ms] hover:scale-[1.06]"
                   />
                   {p.tag ? (
-                    <span className="absolute left-3.5 top-3.5 rounded-full bg-paper px-3 py-1.5 font-mono text-[12px] sm:text-[10.5px] uppercase tracking-wider text-inkdeep">
+                    <span className="absolute left-3.5 top-3.5 rounded-full bg-paper px-3 py-1.5 text-[11.5px] font-bold uppercase tracking-wider text-inkdeep">
                       {p.tag}
                     </span>
                   ) : null}
@@ -153,7 +155,7 @@ export function PackagesDiscovery({ packages, filters, favoriteIds, saved }: Pro
                 </div>
 
                 <div className="flex flex-1 flex-col p-6">
-                  <p className="mb-2.5 font-mono text-[12px] sm:text-[11px] uppercase tracking-[0.1em] text-clay">
+                  <p className="mb-2.5 text-[11.5px] font-bold uppercase tracking-[0.1em] text-clay">
                     {p.region} · {p.duration}
                   </p>
                   <h3 className="mb-2.5 font-display text-2xl font-bold leading-[1.08] tracking-[-0.01em]">

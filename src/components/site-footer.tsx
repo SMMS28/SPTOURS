@@ -36,7 +36,7 @@ export async function SiteFooter() {
           ]} />
 
           <div>
-            <p className="mb-2 font-mono text-[12px] uppercase tracking-[0.16em] text-paper/50 sm:mb-[18px] sm:text-[11px]">Get in touch</p>
+            <p className="mb-2 text-[11.5px] font-semibold uppercase tracking-[0.16em] text-paper/50 sm:mb-[18px]">Get in touch</p>
             <div className="flex flex-col text-[14.5px]">
               <a href={WA_ENQUIRE} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center transition-colors hover:text-paper">WhatsApp us</a>
               {signedIn ? (
@@ -61,7 +61,7 @@ export async function SiteFooter() {
 function FooterCol({ title, links }: { title: string; links: [string, string][] }) {
   return (
     <div>
-      <p className="mb-2 font-mono text-[12px] uppercase tracking-[0.16em] text-paper/50 sm:mb-[18px] sm:text-[11px]">{title}</p>
+      <p className="mb-2 text-[11.5px] font-semibold uppercase tracking-[0.16em] text-paper/50 sm:mb-[18px]">{title}</p>
       <div className="flex flex-col text-[14.5px]">
         {links.map(([label, href], i) => (
           <Link key={`${label}-${i}`} href={href} className="inline-flex min-h-11 items-center transition-colors hover:text-paper">{label}</Link>
